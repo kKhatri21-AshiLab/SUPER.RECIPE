@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<!-- 
+  ============================================
+  RECIPE FORM PAGE - COMPLETE BEGINNER GUIDE
+  ============================================
+  FILE PURPOSE: Form for users to add new recipes to the collection
+  
+  WHAT THIS PAGE DOES:
+    1. Displays a form with fields for recipe information
+    2. Lets users pick cooking time using buttons (10min, 20min, etc.)
+    3. Lets users pick difficulty level (Easy, Medium, Hard)
+    4. Validates that all required fields are filled
+    5. Saves recipe data to browser storage
+    6. Provides visual feedback when buttons are clicked
+    7. Shows success or error messages to the user
+  
+  DESIGN APPROACH:
+    - Uses modern CSS for beautiful gradients and animations
+    - Responsive: automatically adjusts layout for phone/tablet/desktop
+    - Accessible: works with screen readers and keyboard navigation
+    - Includes dark mode support for users who prefer it
+  ============================================
+-->
+<html lang="en">
+<head>
+    <!-- CHARACTER ENCODING: Tells browser to use UTF-8 (supports all languages) -->
+    <meta charset="UTF-8">
+    <!-- VIEWPORT: Makes site mobile-friendly and responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- DESCRIPTION: Appears in Google search results showing what page is about -->
+    <meta name="description" content="Add and share your favorite recipes to the Recipe Showcase">
+    <!-- TITLE: Shows in browser tab and used by search engines -->
+    <title>Add Recipe - Recipe Showcase</title>
+    <!-- FONT AWESOME: Icon library - provides checkmarks, arrows, save icons, etc. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 
+         =========== CSS DESIGN VARIABLES (COLOR SCHEME) ===========
+         These "variables" (--name) store colors and values we use repeatedly
+         WHY: If we need to change the purple color from #667eea to something else,
+         we change it in ONE place instead of 50 places!
+         HOW: Use them with: color: var(--primary-color)
+        */
+        :root {
+            /* Gradient backgrounds (smooth color transitions) */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* Purple-blue gradient */
+            --success-gradient: linear-gradient(135deg, #34d399, #10b981);          /* Green gradient */
+            
+            /* Main colors used throughout design */
+            --primary-color: #667eea;      /* Light purple - main color */
+            --primary-dark: #4537a6;       /* Dark purple - highlighted buttons */
+            --text-dark: #333;             /* Dark gray - for text on light backgrounds */
+            --text-light: #555;            /* Medium gray - secondary text */
+            --border-color: #dcdcdc;       /* Light gray - for input borders */
+            --bg-light: #fafafa;           /* Very light gray - background fills */
+            
+            /* Spacing and animation */
+            --border-radius: 14px;         /* Rounded corners for modern look */
+            --transition: 0.2s ease;       /* Smooth animation timing */
+        }
+
+        
+        /* ========== UNIVERSAL STYLING (All Elements) ========== */
+        * {
+            /* Remove browser's default spacing from all elements */
+            margin: 0;      /* Space outside elements */
+            padding: 0;     /* Space inside elements */
+            box-sizing: border-box;  /* Don't add padding/border to element width calculation */
+        }
+
+        /* ========== HTML & BODY STYLING ========== */
+        html {
+            /* Smooth scroll when clicking anchor links (#section) */
+            scroll-behavior: smooth;
+        }
+
+        body {
+            /* Apply beautiful gradient background (purple to blue) */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  /* Modern font */
+            background: var(--primary-gradient);  /* Use gradient defined above */
+            min-height: 100vh;  /* Fill entire screen height */
+            padding: 20px;      /* Space around content */
+            color: var(--text-dark);  /* Text color */
+        }
+
+        /* ========== PAGE CONTAINER (Main Content Box) ========== */
+        .page-container {
+            /* White box that holds all the form content */
+            max-width: 900px;  /* Don't let it be wider than 900px */
+            margin: 0 auto;    /* Center horizontally */
+            background: rgba(255, 255, 255, 0.95);  /* White with slight transparency */
+            border-radius: 24px;  /* Round corners for modern look */
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);  /* Shadow makes it "pop" */
+            padding: 35px;  /* Spacing inside the box */
+        }
+
+        /* ========== HEADER STYLING ========== */
+        .page-header {
+            /* "Add Your Recipe" title area at top */
+            text-align: center;  /* Center all text horizontally */
+            margin-bottom: 30px;  /* Space below header */
+        }
+
+        .page-header h1 {
+            /* Main "Add Your Recipe" heading */
+            font-size: 2.8rem;  /* Large text */
+            margin-bottom: 10px;  /* Space below heading */
+            color: var(--text-dark);
+        }
+
+        .page-header p {
+            /* Subtitle text */
+            color: var(--text-light);  /* Slightly lighter gray */
+            font-size: 1rem;
+            opacity: 0.9;  /* Slightly transparent */
+        }
+
+        /* ========== BACK LINK STYLING ========== */
+        .back-link {
+            /* "Back to Recipes" link at top */
+            display: inline-flex;  /* Makes it a flex container */
+            align-items: center;  /* Vertically centers items */
+            gap: 8px;  /* Space between icon and text */
+            color: var(--primary-color);  /* Purple color */
+            text-decoration: none;  /* Remove underline from link */
+            font-weight: 700;  /* Bold text */
+            margin-bottom: 25px;  /* Space below link */
+            transition: color var(--transition);  /* Smooth color change on hover */
+        }
+
+        .back-link:hover,
+        .back-link:focus {
+            /* When user hovers or focuses on link */
+            color: var(--primary-dark);  /* Change to darker purple */
+            outline: none;  /* Remove focus outline */
+        }
+
+        /* ========== FORM STYLING ========== */
+        form {
+            /* Container for all form fields */
+            display: grid;  /* Use grid layout */
+            gap: 20px;  /* Space between items */
+        }
+
+        label {
+            /* Labels above form fields (e.g., "Recipe Title") */
+            font-weight: 600;  /* Semi-bold */
+            color: var(--text-dark);
+            display: flex;  /* Make it a flex container */
+            align-items: center;  /* Center items vertically */
+            gap: 4px;  /* Small space */
+        }
+
+        .required::after {
+            /* Red asterisk (*) after required field labels */
+            content: "*";  /* Add an asterisk */
+            color: #e53e3e;  /* Red color */
+        }
+
+        /* ========== INPUT FIELDS STYLING ========== */
+        input[type="text"],
+        textarea,
+        select {
+            /* Style for all text inputs, text areas, and dropdowns */
+            width: 100%;  /* Take full width of container */
+            padding: 14px 16px;  /* Internal spacing for text */
+            border: 2px solid var(--border-color);  /* Light gray border */
+            border-radius: var(--border-radius);  /* Rounded corners */
+            font-size: 1rem;  /* Normal text size */
+            background: var(--bg-light);  /* Light gray background */
+            resize: vertical;  /* Allow user to resize textarea only vertically */
+            font-family: inherit;  /* Use same font as page */
+            transition: border-color var(--transition);  /* Smooth animation when focused */
+        }
+
+        /* ========== FOCUS STATE (When User Clicks in Field) ========== */
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            /* This activates when user clicks in the field or tabs to it */
+            outline: none;  /* Remove browser's default outline */
+            border-color: var(--primary-color);  /* Change border to purple */
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);  /* Soft purple glow */
+        }
+
+        /* ========== ERROR STATE (Invalid Input) ========== */
+        input[type="text"]:invalid:not(:placeholder-shown),
+        textarea:invalid:not(:placeholder-shown),
+        select:invalid {
+            /* Triggered when user enters invalid data */
+            border-color: #e53e3e;  /* Red border shows there's an error */
+        }
+
+        textarea {
+            /* Special styling for text areas (multi-line text) */
+            min-height: 100px;  /* Minimum height so it's easy to type in */
+            line-height: 1.5;  /* Space between text lines */
+        }
+
+        /* ========== FORM GROUP (Container for Label + Input + Error) ========== */
+        .form-group {
+            /* Groups a label, input, and error message together */
+            display: grid;  /* Stack items vertically */
+            gap: 6px;  /* Space between label and input */
+        }
+
+        /* ========== ERROR STYLING FOR FORM GROUPS ========== */
+        .form-group.error input,
+        .form-group.error textarea,
+        .form-group.error select {
+            /* When form-group has 'error' class, change input border to red */
+            border-color: #e53e3e;  /* Red border */
+        }
+
+        .error-message {
+            /* Error text shown below inputs when validation fails */
+            color: #e53e3e;  /* Red text */
+            font-size: 0.875rem;  /* Smaller text than input */
+            margin-top: 4px;  /* Space above error message */
+            display: none;  /* Hidden by default, shown only when needed */
+        }
+
+        .form-group.error .error-message {
+            /* When an error occurs, show the error message */
+            display: block;  /* Make it visible */
+        }
+
+        /* ========== TIME SELECTION SECTION STYLING ========== */
+        .time-selection {
+            /* Container for all time-related elements (buttons + custom input) */
+            display: flex;  /* Use flex layout */
+            flex-direction: column;  /* Stack items vertically */
+            gap: 10px;  /* Space between buttons and input */
+        }
+
+        .time-buttons {
+            /* Container for the 6 time buttons */
+            display: flex;  /* Arrange horizontally */
+            flex-wrap: wrap;  /* Wrap to next line if not enough space */
+            gap: 8px;  /* Space between buttons */
+        }
+
+        /* ========== TIME BUTTON STYLING (10min, 20min, etc.) ========== */
+        .time-btn {
+            /* Each time selection button */
+            padding: 10px 16px;  /* Internal spacing */
+            border: 2px solid var(--border-color);  /* Gray border */
+            border-radius: var(--border-radius);  /* Rounded corners */
+            background: var(--bg-light);  /* Light gray background */
+            color: var(--text-dark);  /* Dark text */
+            font-size: 0.9rem;  /* Slightly smaller text */
+            font-weight: 500;  /* Semi-bold */
+            cursor: pointer;  /* Change cursor to hand pointer */
+            transition: all var(--transition);  /* Smooth animation for all changes */
+            min-width: 80px;  /* Minimum width so buttons aren't too small */
+        }
+
+        /* ========== HOVER STATE (When Mouse Over Button) ========== */
+        .time-btn:hover {
+            /* What happens when user hovers mouse over button */
+            border-color: var(--primary-color);  /* Border becomes purple */
+            background: rgba(102, 126, 234, 0.08);  /* Slight purple tint */
+            transform: translateY(-1px);  /* Move up 1px for "lifting" effect */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+        }
+
+        /* ========== ACTIVE STATE (When Button is Clicked/Selected) ========== */
+        .time-btn.active {
+            /* This class is added by JavaScript when button is clicked */
+            background: var(--primary-dark);  /* Dark purple fill */
+            color: white;  /* White text */
+            border-color: var(--primary-dark);  /* Dark purple border */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);  /* Stronger shadow */
+            transform: translateY(-1px);  /* Slightly lifted */
+        }
+
+        /* ========== CUSTOM BUTTON SPECIAL STYLING ========== */
+        .time-btn.custom-btn {
+            /* The "Custom" button has different styling to stand out */
+            background: #f0f9ff;  /* Light blue background */
+            color: #0369a1;  /* Dark blue text */
+            border-color: #0ea5e9;  /* Blue border */
+        }
+
+        .time-btn.custom-btn:hover {
+            background: #e0f2fe;
+        }
+
+        .time-btn.custom-btn.active {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .difficulty-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* ========== DIFFICULTY SELECTION BUTTONS STYLING ========== */
+        .difficulty-buttons {
+            /* Container for the 3 difficulty buttons (Easy, Medium, Hard) */
+            display: flex;  /* Arrange horizontally */
+            flex-wrap: wrap;  /* Wrap to next line if needed */
+            gap: 8px;  /* Space between buttons */
+        }
+
+        /* ========== DIFFICULTY BUTTON STYLING ========== */
+        .difficulty-btn {
+            /* Each difficulty level button has same structure as time buttons */
+            padding: 10px 16px;  /* Internal spacing */
+            border: 2px solid var(--border-color);  /* Gray border */
+            border-radius: var(--border-radius);  /* Rounded corners */
+            background: var(--bg-light);  /* Light gray background */
+            color: var(--text-dark);  /* Dark text */
+            font-size: 0.9rem;  /* Slightly smaller text */
+            font-weight: 500;  /* Semi-bold */
+            cursor: pointer;  /* Hand pointer when hovering */
+            transition: all var(--transition);  /* Smooth animations */
+            min-width: 80px;  /* Minimum width */
+        }
+
+        /* ========== DIFFICULTY BUTTON HOVER STATE ========== */
+        .difficulty-btn:hover {
+            /* What happens when user hovers over button */
+            border-color: var(--primary-color);  /* Purple border */
+            background: rgba(102, 126, 234, 0.08);  /* Light purple fill */
+            transform: translateY(-1px);  /* Lift effect */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+        }
+
+        /* ========== DIFFICULTY BUTTON ACTIVE STATE ========== */
+        .difficulty-btn.active {
+            /* Added by JavaScript when button is selected */
+            background: var(--primary-dark);  /* Dark purple */
+            color: white;  /* White text */
+            border-color: var(--primary-dark);  /* Dark purple border */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);  /* Strong shadow */
+            transform: translateY(-1px);  /* Lifted appearance */
+        }
+
+        /* ========== ACTION BUTTONS (Submit & Cancel) ========== */
+        .button-row {
+            /* Container holding "Save Recipe" and "Cancel" buttons */
+            display: flex;  /* Side by side layout */
+            justify-content: space-between;  /* Space them apart */
+            flex-wrap: wrap;  /* Wrap on mobile */
+            gap: 15px;  /* Space between buttons */
+            margin-top: 10px;  /* Space above buttons */
+        }
+
+        .submit-btn,
+        .cancel-btn {
+            /* Styling for both submit and cancel buttons */
+            border: none;  /* Remove default border */
+            border-radius: var(--border-radius);  /* Rounded corners */
+            padding: 14px 22px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+            min-width: 140px;
+        }
+
+        .submit-btn {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .submit-btn:hover:not(:disabled),
+        .submit-btn:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(52, 211, 153, 0.3);
+            outline: none;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .cancel-btn {
+            background: #eef2ff;
+            color: #4f46e5;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cancel-btn:hover,
+        .cancel-btn:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+            outline: none;
+        }
+
+        .note {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            opacity: 0.9;
+            display: block;
+        }
+
+        .message {
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-top: 10px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .success-message {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            display: none;
+        }
+
+        .error-notification {
+            background: #fee;
+            color: #c53030;
+            border: 1px solid #fc8181;
+            display: none;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-section {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 700px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .page-container {
+                padding: 20px;
+            }
+
+            .time-buttons {
+                justify-content: center;
+            }
+
+            .time-btn {
+                flex: 1 1 auto;
+                min-width: 70px;
+            }
+
+            .difficulty-buttons {
+                justify-content: center;
+            }
+
+            .difficulty-btn {
+                flex: 1 1 auto;
+                min-width: 70px;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .submit-btn,
+            .cancel-btn {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                color: #e0e0e0;
+            }
+
+            .page-container {
+                background: rgba(30, 30, 30, 0.95);
+                color: #e0e0e0;
+            }
+
+            .page-header h1 {
+                color: #e0e0e0;
+            }
+
+            .page-header p {
+                color: #b0b0b0;
+            }
+
+            input[type="text"],
+            textarea,
+            select {
+                background: #2a2a2a;
+                color: #e0e0e0;
+                border-color: #444;
+            }
+
+            .time-btn {
+                background: #2a2a2a;
+                color: #e0e0e0;
+                border-color: #444;
+            }
+
+            .time-btn:hover {
+                border-color: var(--primary-color);
+                background: rgba(102, 126, 234, 0.15);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .time-btn.active {
+                background: var(--primary-dark);
+                color: white;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                transform: translateY(-1px);
+            }
+
+            .time-btn.custom-btn {
+                background: #1e3a5f;
+                color: #7dd3fc;
+                border-color: #0ea5e9;
+            }
+
+            .time-btn.custom-btn:hover {
+                background: #1e40af;
+            }
+
+            .time-btn.custom-btn.active {
+                background: #0ea5e9;
+                color: white;
+            }
+
+            .difficulty-btn {
+                background: #2a2a2a;
+                color: #e0e0e0;
+                border-color: #444;
+            }
+
+            .difficulty-btn:hover {
+                border-color: var(--primary-color);
+                background: rgba(102, 126, 234, 0.15);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .difficulty-btn.active {
+                background: var(--primary-dark);
+                color: white;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                transform: translateY(-1px);
+            }
+
+            label {
+                color: #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <a href="RECEPE_CARD.html" class="back-link" aria-label="Go back to recipes">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                <span>Back to Recipes</span>
+            </a>
+            <h1>Add Your Recipe</h1>
+            <p>Share your favorite dish and add it to the recipe cards.</p>
+        </div>
+
+        <form id="recipeForm" novalidate>
+            <div id="errorNotification" class="message error-notification"></div>
+
+            <div class="form-grid">
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <h2 class="section-title">Basic Information</h2>
+
+                    <div class="form-group">
+                        <label for="title" class="required">Recipe Title</label>
+                        <input 
+                            type="text" 
+                            id="title" 
+                            name="title" 
+                            placeholder="e.g. Apple Cinnamon Pancakes" 
+                            required
+                            maxlength="100"
+                            aria-describedby="title-error"
+                        >
+                        <span id="title-error" class="error-message">Recipe title is required (max 100 characters)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="required">Short Description</label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            placeholder="Tell readers why your recipe is delicious" 
+                            required
+                            maxlength="250"
+                            aria-describedby="description-error"
+                        ></textarea>
+                        <span class="note">Max 250 characters</span>
+                        <span id="description-error" class="error-message">Description is required</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="totalTime" class="required">Total Time</label>
+                        <div class="time-selection">
+                            <div class="time-buttons">
+                                <button type="button" class="time-btn" data-time="10 min">10 min</button>
+                                <button type="button" class="time-btn" data-time="20 min">20 min</button>
+                                <button type="button" class="time-btn" data-time="30 min">30 min</button>
+                                <button type="button" class="time-btn" data-time="1 hour">1 hour</button>
+                                <button type="button" class="time-btn" data-time="2 hours">2 hours</button>
+                                <button type="button" class="time-btn custom-btn" id="customTimeBtn">Custom</button>
+                            </div>
+                            <input 
+                                type="text" 
+                                id="totalTime" 
+                                name="totalTime" 
+                                placeholder="e.g. 45 min" 
+                                required
+                                maxlength="50"
+                                aria-describedby="totalTime-error"
+                                style="display: none;"
+                            >
+                        </div>
+                        <span id="totalTime-error" class="error-message">Total time is required</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="difficulty" class="required">Difficulty Level</label>
+                        <div class="difficulty-selection">
+                            <div class="difficulty-buttons">
+                                <button type="button" class="difficulty-btn" data-difficulty="Easy">Easy</button>
+                                <button type="button" class="difficulty-btn" data-difficulty="Medium">Medium</button>
+                                <button type="button" class="difficulty-btn" data-difficulty="Hard">Hard</button>
+                            </div>
+                            <input 
+                                type="hidden" 
+                                id="difficulty" 
+                                name="difficulty" 
+                                required
+                                aria-describedby="difficulty-error"
+                            >
+                        </div>
+                        <span id="difficulty-error" class="error-message">Please select a difficulty level</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tags">Tags (comma separated)</label>
+                        <input 
+                            type="text" 
+                            id="tags" 
+                            name="tags" 
+                            placeholder="e.g. Breakfast, Gluten Free, Quick"
+                            maxlength="200"
+                        >
+                        <span class="note">Optional. Helps with recipe discovery.</span>
+                    </div>
+                </div>
+
+                <!-- Recipe Details Section -->
+                <div class="form-section">
+                    <h2 class="section-title">Recipe Details</h2>
+
+                    <div class="form-group">
+                        <label for="ingredients" class="required">Ingredients (one per line)</label>
+                        <textarea 
+                            id="ingredients" 
+                            name="ingredients" 
+                            placeholder="e.g. 2 eggs&#10;1 cup flour&#10;1/2 cup milk" 
+                            required
+                            aria-describedby="ingredients-error"
+                        ></textarea>
+                        <span class="note">Enter each ingredient on a new line</span>
+                        <span id="ingredients-error" class="error-message">At least one ingredient is required</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="instructions" class="required">Steps (one per line)</label>
+                        <textarea 
+                            id="instructions" 
+                            name="instructions" 
+                            placeholder="e.g. Mix batter&#10;Cook for 8 minutes" 
+                            required
+                            aria-describedby="instructions-error"
+                        ></textarea>
+                        <span class="note">Enter each step on a new line</span>
+                        <span id="instructions-error" class="error-message">At least one instruction step is required</span>
+                    </div>
+                </div>
+
+                <!-- Media Section -->
+                <div class="form-section">
+                    <h2 class="section-title">Media (Optional)</h2>
+
+                    <div class="form-group">
+                        <label for="image">Card Image URL</label>
+                        <input 
+                            type="text" 
+                            id="image" 
+                            name="image" 
+                            placeholder="https://example.com/image.jpg"
+                            aria-describedby="image-note"
+                        >
+                        <span id="image-note" class="note">Optional cover image for the recipe card. Must be a valid URL.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stepImages">Step Images (one URL per line)</label>
+                        <textarea 
+                            id="stepImages" 
+                            name="stepImages" 
+                            placeholder="https://example.com/step1.jpg&#10;https://example.com/step2.jpg"
+                        ></textarea>
+                        <span class="note">Optional. One image URL per step in the same order as your steps.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stepVideos">Step Videos (one URL per line)</label>
+                        <textarea 
+                            id="stepVideos" 
+                            name="stepVideos" 
+                            placeholder="https://youtube.com/watch?v=...&#10;https://example.com/video.mp4"
+                        ></textarea>
+                        <span class="note">Optional. YouTube or direct video URLs. One per step in the same order as your steps.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-save" aria-hidden="true"></i>
+                    <span>Save Recipe</span>
+                </button>
+                <a href="RECEPE_CARD.html" class="cancel-btn" aria-label="Cancel and return to recipes">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <span>Cancel</span>
+                </a>
+            </div>
+
+            <div id="successMessage" class="message success-message">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                <span>Recipe saved successfully! Redirecting...</span>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        /**
+         * ============================================
+         * JAVASCRIPT - FORMULA FORM INTERACTIVE BEHAVIOR
+         * ============================================
+         * 
+         * WHAT IS JAVASCRIPT?
+         * JavaScript makes the page interactive. It:
+         *   - Makes buttons do things when clicked
+         *   - Validates form fields (checks if required)
+         *   - Saves data to browser memory (localStorage)
+         *   - Shows/hides elements based on user actions
+         * 
+         * WHAT IS A CLASS?
+         * A class is like a blueprint for an object. In this case,
+         * RecipeFormManager is a class that manages everything
+         * related to the form - clicking buttons, validating inputs, saving data.
+         * 
+         * HOW IT WORKS:
+         * 1. When page loads, the constructor() runs and finds all form elements
+         * 2. init() sets up event listeners (things that listen for user actions)
+         * 3. When user interacts, the appropriate method (setupTimeButtons(), etc) runs
+         * 4. Each method handles its specific task
+         */
+        
+        class RecipeFormManager {
+            /**
+             * CONSTRUCTOR - Runs when page first loads
+             * Stores references to all the form elements we'll need
+             * Think of it like: "Find all these elements and save them as variables"
+             */
+            constructor() {
+                // Get the form element from HTML (id="recipeForm")
+                this.form = document.getElementById('recipeForm');
+                
+                // Get the green success message element (shows when recipe is saved)
+                this.successMessage = document.getElementById('successMessage');
+                
+                // Get the red error message element (shows when something goes wrong)
+                this.errorNotification = document.getElementById('errorNotification');
+                
+                // Get the "Save Recipe" button
+                this.submitBtn = document.getElementById('submitBtn');
+                
+                // Time to wait (1500 milliseconds = 1.5 seconds) before redirecting
+                // After showing success message, wait this long before going to next page
+                this.redirectDelay = 1500;
+                
+                // Run the init() method to set everything up
+                this.init();
+            }
+
+            /**
+             * INIT - Initialize all event listeners
+             * Think of event listeners like: "When X happens, do Y"
+             * Examples:
+             *   - When form is submitted, run handleSubmit()
+             *   - When user leaves a field, run validateField()
+             *   - When user clicks time button, run handleTimeButtonClick()
+             */
+            init() {
+                // When user clicks "Save Recipe" button, call handleSubmit function
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                
+                // Set up validation for required fields (checks when user leaves field)
+                this.setupFieldValidation();
+                
+                // Set up interactions for time buttons (10min, 20min, etc)
+                this.setupTimeButtons();
+                
+                // Set up interactions for difficulty buttons (Easy, Medium, Hard)
+                this.setupDifficultyButtons();
+            }
+
+            /**
+             * SETUP FIELD VALIDATION
+             * WHAT IT DOES: Checks required fields when user is done editing
+             * TRIGGERS ON: 'blur' (when user leaves field) or 'change' (when value changes)
+             */
+            setupFieldValidation() {
+                // Find all form elements with 'required' attribute
+                const requiredFields = this.form.querySelectorAll('[required]');
+                
+                // For EACH required field, add event listeners
+                requiredFields.forEach(field => {
+                    // When user leaves field (blur), validate it
+                    field.addEventListener('blur', () => this.validateField(field));
+                    
+                    // When user changes value (change), validate it
+                    field.addEventListener('change', () => this.validateField(field));
+                });
+            }
+
+            /**
+             * SETUP TIME BUTTONS
+             * WHAT IT DOES: Makes the time preset buttons clickable
+             * FINDS: All buttons with class 'time-btn' (10min, 20min, 30min, 1hour, 2hours, Custom)
+             */
+            setupTimeButtons() {
+                // Get all time buttons
+                const timeButtons = document.querySelectorAll('.time-btn');
+                
+                // Get the hidden input that will store the actual time value
+                const customInput = document.getElementById('totalTime');
+
+                // Add click event listener to EACH time button
+                timeButtons.forEach(button => {
+                    button.addEventListener('click', () => this.handleTimeButtonClick(button, timeButtons, customInput));
+                });
+            }
+
+            /**
+             * HANDLE TIME BUTTON CLICK
+             * WHAT IT DOES: When a time button is clicked:
+             *   1. Removes purple highlighting from all buttons
+             *   2. Adds purple highlighting to clicked button
+             *   3. If "Custom" is clicked, shows input field for manual entry
+             *   4. If preset is clicked, fills in the value (10 min, 20 min, etc)
+             * 
+             * PARAMETERS:
+             *   clickedButton = the button user just clicked
+             *   allButtons = all 6 time buttons
+             *   customInput = the hidden input that stores the time value
+             */
+            handleTimeButtonClick(clickedButton, allButtons, customInput) {
+                // Step 1: Remove 'active' class from ALL buttons (removes purple highlighting)
+                allButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Step 2: Add 'active' class to the clicked button (adds purple highlighting)
+                clickedButton.classList.add('active');
+
+                // Step 3: Check if "Custom" button was clicked
+                if (clickedButton.id === 'customTimeBtn') {
+                    // Show custom input field (it's normally hidden)
+                    customInput.style.display = 'block';
+                    // Focus on it so user can start typing
+                    customInput.focus();
+                    customInput.value = '';  // Clear input field
+                } else {
+                    // For preset buttons (10min, 20min, etc), get the value from data-time attribute
+                    customInput.style.display = 'none';  // Hide the custom input
+                    customInput.value = clickedButton.dataset.time;  // Set value (e.g., "30 min")
+                }
+
+                // Check if this field is valid (has a value selected)
+                this.validateField(customInput);
+            }
+
+            /**
+             * SETUP DIFFICULTY BUTTONS
+             * WHAT IT DOES: Makes the difficulty level buttons (Easy, Medium, Hard) clickable
+             * SIMILAR TO: setupTimeButtons but for difficulty instead of time
+             */
+            setupDifficultyButtons() {
+                // Get all difficulty buttons
+                const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+                
+                // Get the hidden input that stores the selected difficulty
+                const difficultyInput = document.getElementById('difficulty');
+
+                // Add click event listener to EACH difficulty button
+                difficultyButtons.forEach(button => {
+                    button.addEventListener('click', () => this.handleDifficultyButtonClick(button, difficultyButtons, difficultyInput));
+                });
+            }
+
+            /**
+             * HANDLE DIFFICULTY BUTTON CLICK
+             * WHAT IT DOES: When Easy/Medium/Hard button is clicked:
+             *   1. Removes purple highlighting from all difficulty buttons
+             *   2. Adds purple highlighting to clicked button
+             *   3. Stores the selected difficulty level (Easy, Medium, or Hard)
+             *   4. Validates the field
+             * 
+             * PARAMETERS:
+             *   clickedButton = the difficulty button user clicked
+             *   allButtons = all 3 difficulty buttons
+             *   difficultyInput = the hidden input storing the selected difficulty
+             */
+            handleDifficultyButtonClick(clickedButton, allButtons, difficultyInput) {
+                // Remove 'active' class from all buttons (removes purple highlighting)
+                allButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Add 'active' class to clicked button (adds purple highlighting)
+                clickedButton.classList.add('active');
+
+                // Get data-difficulty attribute from button (value: "Easy", "Medium", or "Hard")
+                // This is stored in the hidden input field
+                difficultyInput.value = clickedButton.dataset.difficulty;
+
+                // Validate that a difficulty was selected
+                this.validateField(difficultyInput);
+            }
+
+            /**
+             * VALIDATE FIELD
+             * WHAT IT DOES: Checks if a form field has valid input
+             * DIFFERENT VALIDATION FOR EACH FIELD TYPE:
+             *   - Time: Must have button selected OR custom value entered
+             *   - Difficulty: Must have button selected
+             *   - Other fields: Must have value (checked by HTML 'required')
+             * 
+             * SHOWS RED ERROR BORDER: If field is invalid
+             * SHOWS NORMAL BORDER: If field is valid
+             */
+            validateField(field) {
+                let isValid = false;  // Start by assuming field is NOT valid
+
+                /* Check WHAT field this is and validate accordingly */
+                if (field.id === 'totalTime') {
+                    /* SPECIAL VALIDATION FOR TIME FIELD */
+                    // Get the active (selected) time button
+                    const activeButton = document.querySelector('.time-btn.active');
+                    
+                    if (activeButton && activeButton.id !== 'customTimeBtn') {
+                        /* If a preset time button is selected, field is valid */
+                        isValid = true;
+                    } else if (activeButton && activeButton.id === 'customTimeBtn') {
+                        /* If "Custom" is selected, check that user entered a value */
+                        // field.checkValidity() = basic HTML validation
+                        // field.value.trim().length > 0 = make sure input isn't empty
+                        isValid = field.checkValidity() && field.value.trim().length > 0;
+                    } else {
+                        /* No time button selected at all */
+                        isValid = false;
+                    }
+                } else if (field.id === 'difficulty') {
+                    /* SPECIAL VALIDATION FOR DIFFICULTY FIELD */
+                    // Just check if a value is selected (has content that's not just spaces)
+                    isValid = field.value.trim().length > 0;
+                } else {
+                    /* REGULAR VALIDATION FOR OTHER FIELDS */
+                    // Use HTML5's built-in validation (required, email, etc)
+                    isValid = field.checkValidity();
+                }
+
+                /* Find the form-group container (label + input + error message) */
+                const formGroup = field.closest('.form-group');
+                
+                if (formGroup) {
+                    if (isValid) {
+                        // Field is valid: remove error styling (red border)
+                        formGroup.classList.remove('error');
+                    } else {
+                        // Field is invalid: add error styling (red border)
+                        formGroup.classList.add('error');
+                    }
+                }
+
+                // Return true/false so calling code knows if valid
+                return isValid;
+            }
+
+            /**
+             * HANDLE FORM SUBMISSION
+             * WHAT IT DOES: When user clicks "Save Recipe" button:
+             *   1. Prevents form from submitting normally (default browser behavior)
+             *   2. Validates all required fields
+             *   3. If valid: saves recipe to browser memory and shows success message
+             *   4. If invalid: shows error message asking user to fill in fields
+             * 
+             * ASYNC means this function can wait for things (like file saving)
+             * think of it like: "This might take a moment, wait for it to finish"
+             */
+            async handleSubmit(event) {
+                // event.preventDefault() = "Don't submit the form the normal way"
+                // This prevents page from reloading
+                event.preventDefault();
+
+                // Check if ALL required fields are filled and valid
+                if (!this.validateForm()) {
+                    // Show error message
+                    this.showError('Please fill in all required fields correctly.');
+                    // Stop here, don't save
+                    return;
+                }
+
+
+                try {
+                    // Disable submit button so user can't click it multiple times
+                    this.submitBtn.disabled = true;
+                    
+                    // Get all form data and organize it into a recipe object
+                    const newRecipe = this.buildRecipeObject();
+                    
+                    // Save recipe to browser's localStorage (browser memory)
+                    this.saveRecipe(newRecipe);
+                    
+                    // Show green success message
+                    this.showSuccessMessage();
+                    
+                    // After 1.5 seconds, send user back to recipes page
+                    setTimeout(() => {
+                        window.location.href = 'RECEPE_CARD.html';
+                    }, this.redirectDelay);
+                } catch (error) {
+                    // If something goes wrong:
+                    console.error('Error saving recipe:', error);
+                    this.showError('Failed to save recipe. Please try again.');
+                    this.submitBtn.disabled = false;  // Re-enable button
+                }
+            }
+
+            /**
+             * VALIDATE ENTIRE FORM
+             * WHAT IT DOES: Checks all required fields at once
+             * RETURNS: true if ALL fields are valid, false if ANY field is invalid
+             * USED BY: handleSubmit() before saving recipe
+             */
+            validateForm() {
+                // Get all elements with 'required' attribute
+                const requiredFields = this.form.querySelectorAll('[required]');
+                let isValid = true;
+
+                // Check EACH required field
+                requiredFields.forEach(field => {
+                    // If ANY field is invalid, set isValid to false
+                    if (!this.validateField(field)) {
+                        isValid = false;
+                    }
+                });
+
+                return isValid;  // true if all valid, false if any invalid
+            }
+
+            /**
+             * BUILD RECIPE OBJECT
+             * WHAT IT DOES: Takes all the form input and creates a single organized object
+             * WHY: We need a structured way to store the recipe data
+             * EXAMPLE OUTPUT:
+             * {
+             *   id: "recipe_123456_abc",
+             *   title: "Apple Pie",
+             *   difficulty: "Medium",
+             *   totalTime: "30 min",
+             *   ingredients: ["2 apples", "1 cup sugar"],
+             *   instructions: [{description: "Mix apples and sugar", image: "", video: ""}],
+             *   createdAt: "2024-04-06T10:30:00Z"
+             * }
+             */
+            buildRecipeObject() {
+                // Parse instructions (split by line breaks into array)
+                const stepDescriptions = this.parseLines(
+                    document.getElementById('instructions').value
+                );
+                
+                // Parse step images (split by line breaks)
+                const stepImages = this.parseLines(
+                    document.getElementById('stepImages').value,
+                    true  // true = allow empty lines
+                );
+                
+                // Parse step videos (split by line breaks)
+                const stepVideos = this.parseLines(
+                    document.getElementById('stepVideos').value,
+                    true
+                );
+
+                // Return a JavaScript object with all recipe data
+                return {
+                    id: this.generateId(),  // Create unique ID
+                    title: this.getFieldValue('title'),  // Recipe name
+                    shortDescription: this.getFieldValue('description'),  // Short description
+                    totalTime: this.getFieldValue('totalTime'),  // Time: "30 min"
+                    difficulty: document.getElementById('difficulty').value,  // Easy/Medium/Hard
+                    tags: this.parseCommaList(  // Convert "tag1, tag2" into ["tag1", "tag2"]
+                        document.getElementById('tags').value
+                    ),
+                    ingredients: this.parseLines(  // Convert ingredients to array
+                        document.getElementById('ingredients').value
+                    ),
+                    // Map each instruction step with its images/videos
+                    instructions: stepDescriptions.map((description, index) => ({
+                        description,  // Step text
+                        image: stepImages[index] || '',  // Image for this step (or empty string)
+                        video: stepVideos[index] || ''   // Video for this step (or empty string)
+                    })),
+                    image: this.getFieldValue('image'),  // Recipe cover image
+                    createdAt: new Date().toISOString()  // Date/time recipe was created
+                };
+            }
+
+            /**
+             * SAVE RECIPE TO LOCALSTORAGE
+             * WHAT IT DOES: Saves the recipe object to browser's localStorage
+             * WHERE: Browser memory (persists even after closing browser)
+             * HOW: Converts recipe object to JSON and stores it with key "userRecipes"
+             * 
+             * IMPORTANT CONCEPTS:
+             *   - localStorage: Browser's built-in storage (like a hard drive for your browser)
+             *   - JSON.stringify(): Converts object to text format for storage
+             *   - JSON.parse(): Converts text back to object when retrieving
+             */
+            saveRecipe(recipe) {
+                try {
+                    // Get all existing recipes from storage (array)
+                    const recipes = this.getStoredRecipes();
+                    
+                    // Add the new recipe to the array
+                    recipes.push(recipe);
+                    
+                    // Convert recipes array to text (JSON) and save to localStorage
+                    // "userRecipes" is the key we use to find it later
+                    localStorage.setItem('userRecipes', JSON.stringify(recipes));
+                } catch (error) {
+                    // If browser storage is full, show specific error
+                    if (error instanceof Error && error.name === 'QuotaExceededError') {
+                        throw new Error('Storage limit exceeded. Please clear some recipes.');
+                    }
+                    throw error;
+                }
+            }
+
+            /**
+             * GET STORED RECIPES
+             * WHAT IT DOES: Retrieves all saved recipes from browser's localStorage
+             * RETURNS: Array of recipe objects, or empty array if none saved yet
+             * HOW: Reads JSON text from storage and converts it back to objects
+             */
+            getStoredRecipes() {
+                try {
+                    // Get the stored recipes (as JSON text)
+                    const recipes = localStorage.getItem('userRecipes');
+                    
+                    // If recipes exist, convert from JSON text to JavaScript objects
+                    // If no recipes, return empty array
+                    return recipes ? JSON.parse(recipes) : [];
+                } catch (error) {
+                    // If something goes wrong retrieving, log error and return empty
+                    console.error('Error reading recipes from storage:', error);
+                    return [];
+                }
+            }
+
+            /**
+             * GET FIELD VALUE
+             * WHAT IT DOES: Gets text from a form input field and removes extra spaces
+             * EXAMPLE: If input contains "  Apple Pie  ", returns "Apple Pie"
+             * 
+             * HELPER METHOD: Makes code shorter and cleaner
+             * USED BY: Various methods need form values
+             * 
+             * PARAMETERS:
+             *   fieldId = the 'id' of the form field (e.g., "title", "description")
+             */
+            getFieldValue(fieldId) {
+                // Get the element by its ID, get its value, and remove leading/trailing spaces
+                return document.getElementById(fieldId).value.trim();
+            }
+
+            /**
+             * PARSE COMMA-SEPARATED LIST
+             * WHAT IT DOES: Converts text like "tag1, tag2, tag3" into ["tag1", "tag2", "tag3"]
+             * WHY: Makes it easier to work with data as an array instead of raw text
+             * USED BY: Tags field (recipes can have multiple tags)
+             * 
+             * EXAMPLE:
+             * Input: "Breakfast, Gluten Free, Quick"
+             * Output: ["Breakfast", "Gluten Free", "Quick"]
+             */
+            parseCommaList(value) {
+                return value
+                    .split(',')  // Split by comma: "a, b, c" becomes ["a", " b", " c"]
+                    .map(item => item.trim())  // Remove spaces from each item
+                    .filter(item => item.length > 0);  // Remove empty items
+            }
+
+            /**
+             * PARSE LINE-SEPARATED LIST
+             * WHAT IT DOES: Converts multi-line text into an array
+             * WHY: User enters one item per line (ingredients, steps)
+             *      We need to convert that into an array to store it
+             * USED BY: Ingredients and instructions (multi-line text areas)
+             * 
+             * EXAMPLE:
+             * Input: "2 eggs\\n1 cup flour\\n1/2 cup milk"  (each \n is Enter key)
+             * Output: ["2 eggs", "1 cup flour", "1/2 cup milk"]
+             * 
+             * PARAMETERS:
+             *   value = the text from the textarea
+             *   allowEmpty = if true, keep empty lines; if false, remove them
+             */
+            parseLines(value, allowEmpty = false) {
+                // Split by line breaks and remove spaces from each line
+                const lines = value
+                    .split('\n')  // Split each line
+                    .map(line => line.trim());  // Remove spaces
+                
+                // If allowEmpty is false (default), remove empty lines
+                return allowEmpty ? lines : lines.filter(line => line.length > 0);
+            }
+
+            /**
+             * GENERATE UNIQUE ID
+             * WHAT IT DOES: Creates a unique identifier for each recipe
+             * WHY: Need a way to identify each recipe uniquely (for editing, deleting, etc)
+             * HOW: Uses current time + random numbers to create ID almost guaranteed to be unique
+             * 
+             * EXAMPLE OUTPUT: "recipe_1712408400123_a7b3c9k2x"
+             *   - "recipe_" = prefix
+             *   - "1712408400123" = current timestamp
+             *   - "a7b3c9k2x" = random characters
+             */
+            generateId() {
+                // Create ID from: "recipe_" + current time in milliseconds + random characters
+                return `recipe_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            }
+
+            /**
+             * SHOW SUCCESS MESSAGE
+             * WHAT IT DOES: Displays the green "Recipe saved successfully!" message
+             * HIDES: The error message if it was showing
+             * SHOWS: The success message
+             * SCROLLS: To bring message into view
+             */
+            showSuccessMessage() {
+                // Hide error message if visible
+                this.errorNotification.style.display = 'none';
+                
+                // Show success message
+                this.successMessage.style.display = 'block';
+                
+                // Scroll to show message smoothly
+                this.successMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            /**
+             * SHOW ERROR MESSAGE
+             * WHAT IT DOES: Displays error message in red
+             * HIDES: The success message if it was showing
+             * SHOWS: Error message with custom text
+             * SCROLLS: To bring message into view
+             * 
+             * PARAMETERS:
+             *   message = the error text to display to user
+             */
+            showError(message) {
+                // Hide success message
+                this.successMessage.style.display = 'none';
+                
+                // Set the error text
+                this.errorNotification.textContent = message;
+                
+                // Show error message
+                this.errorNotification.style.display = 'block';
+                
+                // Scroll to show message
+                this.errorNotification.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // ========== INITIALIZATION ==========
+        // When page finishes loading, create an instance of RecipeFormManager
+        // This sets up all event listeners and makes the page interactive
+        document.addEventListener('DOMContentLoaded', () => {
+            new RecipeFormManager();
+        });
+    </script>
+</body>
+</html>
