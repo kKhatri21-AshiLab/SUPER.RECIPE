@@ -7,7 +7,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supercook</title>
 
-    <link rel="stylesheet" href="C:\Users\krish\Desktop\project1\styleMain.css">
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #95ebeb;
+}
+
+header {
+    background-color: #04072b;
+    color: #f7b2f3;
+    padding: 1em;
+    text-align: center;
+    border-bottom: 1px solid #444;
+    position: sticky;
+}
+
+header h2{
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    text-size-adjust: 20px;
+}
+
+header nav li {
+    margin-right: 20px;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero {
+    background-image: url('./img/First.jpg');
+    height: 800px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background-repeat: no-repeat;
+}
+
+.hero-inner {
+    justify-content: center;
+    align-items: center;
+}
+
+#search-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#search-input {
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    width: 250px;
+}
+
+#add-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#add-button:hover{
+    background-color: #e78484;
+    color: blue;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+#search-feed {
+    margin-top: 20px;
+}
+
+.tag {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 5px;
+    display: inline-block;
+}
+
+footer {
+    color: #04072b; 
+}
+</style>
+
    
 </head>
 <body>
@@ -15,14 +131,15 @@
         <nav>
             <h2>Welcome Super Cook Book</h2>
             <ul>
-                <li><a href="C:\Users\krish\Desktop\project1\mainHTML\indexMain2.html">Recipes</a></li>
+<li><a href="./mainHTML/indexMain2.html">Recipes</a></li>
                 <li><a href="#">Cookbooks</a></li>
                 <li><a href="#">Meal Planner</a></li>
                 <li><a href="#">add Grocery List</a></li>
                 <li><a href="#">pdf's</a></li>
                 <li><a href="#">posts</a></li>
                 <li><a href="#">feeds </a></li>
-                <li><a href="C:\Users\krish\Desktop\project1\mainHTML\addRecipe.html">Add Recipe</a></li>
+                <li><a href="./mainHTML/addRecipe.html">Add Recipe</a></li>
+
             </ul>
         </nav>
     </header>
@@ -43,6 +160,39 @@
         <p>&copy; 2023 Supercook</p>
     </footer>
 
-    <script src="C:\Users\krish\Desktop\project1\scriptMain.js"></script>
+    <script>
+const searchForm = document.getElementById('search-form');
+const searchInput = document.getElementById('search-input');
+const addButton = document.getElementById('add-button');
+const searchFeed = document.getElementById('search-feed');
+
+let tags = [];
+
+searchForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const inputValue = searchInput.value.trim();
+    if (inputValue) {
+        const tag = document.createElement('span');
+        tag.classList.add('tag');
+        tag.textContent = inputValue;
+        searchFeed.appendChild(tag);
+        tags.push(inputValue);
+        searchInput.value = '';
+    }
+});
+
+addButton.addEventListener('click', () => {
+    const inputValue = searchInput.value.trim();
+    if (inputValue) {
+        const tag = document.createElement('span');
+        tag.classList.add('tag');
+        tag.textContent = inputValue;
+        searchFeed.appendChild(tag);
+        tags.push(inputValue);
+        searchInput.value = '';
+    }
+});
+    </script>
 </body>
+
 </html>
