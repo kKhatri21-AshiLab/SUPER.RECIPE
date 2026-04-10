@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Database</title>
+    <link rel="stylesheet" href="C:\Users\krish\Desktop\project1\mainHTML\addstyles.css">
+</head>
+<body>
+    <header>
+        <h1>Recipe Database</h1>
+    </header>
+    <main>
+        <section id="recipe-list">
+            <h2>Recipes</h2>
+            <ul id="recipe-list-ul"></ul>
+        </section>
+        <section id="recipe-form">
+            <h2>Add Recipe</h2>
+            <form id="recipe-form-form">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title"><br><br>
+                <label for="servings">Servings:</label>
+                <input type="number" id="servings" name="servings"><br><br>
+                <label for="cooking-time">Cooking Time:</label>
+                <input type="text" id="cooking-time" name="cooking-time"><br><br>
+                <label for="rating">Rating:</label>
+                <input type="number" id="rating" name="rating"><br><br>
+                <label for="ingredients">Ingredients:</label>
+                <textarea id="ingredients" name="ingredients"></textarea><br><br>
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" name="instructions"></textarea><br><br>
+                <label for="tags">Tags:</label>
+                <input type="text" id="tags" name="tags"><br><br>
+                <button id="add-recipe-btn">Add Recipe</button>
+            </form>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
