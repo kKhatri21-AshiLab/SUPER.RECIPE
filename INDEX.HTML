@@ -165,11 +165,11 @@
         }
 
         .time-icon::before {
-            content: "⏱️ ";
+            content: "Time: ";
         }
 
         .difficulty-icon::before {
-            content: "⭐ ";
+            content: "Level: ";
         }
 
         .recipe-description {
@@ -415,6 +415,21 @@
             aspect-ratio: 16 / 9;
             border: none;
         }
+
+        .recipe-status {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.92);
+            color: #4537a6;
+            border-radius: 18px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+            font-weight: 600;
+        }
+
+        .recipe-status.error {
+            color: #b42318;
+        }
     </style>
 </head>
 <body>
@@ -427,211 +442,13 @@
     <div class="container">
         <!-- Page Header -->
         <div class="header">
-            <h1>🍳 Recipe Showcase</h1>
+            <h1>Recipe Showcase</h1>
             <p>Discover amazing recipes with interactive cards</p>
         </div>
 
         <!-- Recipe Cards Grid -->
-        <div class="recipes-grid">
-            <!-- Recipe Card 1 - Creamy Pasta Carbonara -->
-            <div class="recipe-card" onclick="toggleDetails('recipe1')">
-                <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                     alt="Creamy Pasta Carbonara" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Creamy Pasta Carbonara</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">25 min</span>
-                        <span class="difficulty-icon">Easy</span>
-                    </div>
-                    <p class="recipe-description">
-                        Classic Italian pasta with creamy egg sauce, pancetta, and parmesan cheese.
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Italian</span>
-                        <span class="tag">Pasta</span>
-                        <span class="tag">Dinner</span>
-                    </div>
-                    
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
-            <!-- Recipe Card 2 - Avocado Toast Delight -->
-            <div class="recipe-card" onclick="toggleDetails('recipe2')">
-                <img src="https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=1000&q=80" 
-                     alt="Avocado Toast" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Avocado Toast Delight</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">10 min</span>
-                        <span class="difficulty-icon">Very Easy</span>
-                    </div>
-                    <p class="recipe-description">
-                        Perfect breakfast with creamy avocado, poached eggs, and chili flakes.
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Breakfast</span>
-                        <span class="tag">Vegan</span>
-                        <span class="tag">Healthy</span>
-                    </div>
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
-            <!-- Recipe Card 3 - Chocolate Lava Cake -->
-            <div class="recipe-card" onclick="toggleDetails('recipe3')">
-                <img src="https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=1000&q=80" 
-                     alt="Chocolate Lava Cake" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Chocolate Lava Cake</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">20 min</span>
-                        <span class="difficulty-icon">Medium</span>
-                    </div>
-                    <p class="recipe-description">
-                        Rich chocolate cakes with molten centers - dessert perfection!
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Dessert</span>
-                        <span class="tag">Chocolate</span>
-                        <span class="tag">Quick</span>
-                    </div>
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
-            <!-- Recipe Card 4 - Grilled Salmon with Asparagus -->
-            <div class="recipe-card" onclick="toggleDetails('recipe4')">
-                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                     alt="Grilled Salmon with Asparagus" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Grilled Salmon with Asparagus</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">20 min</span>
-                        <span class="difficulty-icon">Easy</span>
-                    </div>
-                    <p class="recipe-description">
-                        Fresh salmon fillet grilled to perfection with tender asparagus spears.
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Seafood</span>
-                        <span class="tag">Healthy</span>
-                        <span class="tag">Grilled</span>
-                    </div>
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
-            <!-- Recipe Card 5 - Classic Margherita Pizza -->
-            <div class="recipe-card" onclick="toggleDetails('recipe5')">
-                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                     alt="Margherita Pizza" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Classic Margherita Pizza</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">30 min</span>
-                        <span class="difficulty-icon">Medium</span>
-                    </div>
-                    <p class="recipe-description">
-                        Traditional Neapolitan pizza with fresh mozzarella, tomatoes, and basil.
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Italian</span>
-                        <span class="tag">Pizza</span>
-                        <span class="tag">Vegetarian</span>
-                    </div>
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
-            <!-- Recipe Card 6 - Chicken Vegetable Stir Fry -->
-            <div class="recipe-card" onclick="toggleDetails('recipe6')">
-                <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                     alt="Chicken Stir Fry" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Chicken Vegetable Stir Fry</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">25 min</span>
-                        <span class="difficulty-icon">Easy</span>
-                    </div>
-                    <p class="recipe-description">
-                        Quick and healthy stir fry with tender chicken and colorful vegetables.
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Asian</span>
-                        <span class="tag">Chicken</span>
-                        <span class="tag">Healthy</span>
-                    </div>
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
-            <!-- Recipe Card 7 - Berry Smoothie Bowl -->
-            <div class="recipe-card" onclick="toggleDetails('recipe7')">
-                <img src="https://images.unsplash.com/photo-1571771019784-3ff35f4f4277?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                     alt="Berry Smoothie Bowl" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Berry Smoothie Bowl</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">10 min</span>
-                        <span class="difficulty-icon">Very Easy</span>
-                    </div>
-                    <p class="recipe-description">
-                        Refreshing bowl packed with antioxidants and topped with fresh fruits.
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Breakfast</span>
-                        <span class="tag">Smoothie</span>
-                        <span class="tag">Healthy</span>
-                    </div>
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
-            <!-- Recipe Card 8 - Spicy Beef Tacos -->
-            <div class="recipe-card" onclick="toggleDetails('recipe8')">
-                <img src="https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                     alt="Beef Tacos" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Spicy Beef Tacos</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">20 min</span>
-                        <span class="difficulty-icon">Easy</span>
-                    </div>
-                    <p class="recipe-description">
-                        Flavorful ground beef tacos with fresh toppings and spicy seasoning.
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Mexican</span>
-                        <span class="tag">Beef</span>
-                        <span class="tag">Spicy</span>
-                    </div>
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
-            <!-- Recipe Card 9 - Vegetable Coconut Curry -->
-            <div class="recipe-card" onclick="toggleDetails('recipe9')">
-                <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                     alt="Vegetable Curry" class="recipe-image">
-                <div class="recipe-content">
-                    <h3 class="recipe-title">Vegetable Coconut Curry</h3>
-                    <div class="recipe-meta">
-                        <span class="time-icon">35 min</span>
-                        <span class="difficulty-icon">Medium</span>
-                    </div>
-                    <p class="recipe-description">
-                        Aromatic curry with mixed vegetables in creamy coconut sauce.
-                    </p>
-                    <div class="recipe-tags">
-                        <span class="tag">Indian</span>
-                        <span class="tag">Vegetarian</span>
-                        <span class="tag">Spicy</span>
-                    </div>
-                    <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                </div>
-            </div>
-
+        <div class="recipes-grid" id="recipesGrid">
+            <div class="recipe-status" id="recipeStatus">Loading recipes from TheMealDB...</div>
         </div>
     </div>
 
@@ -648,1075 +465,199 @@
     </div>
 
     <script>
-        // ==========================================
-        // CUSTOM RECIPE DATA STRUCTURE
-        // ==========================================
-        // Personalized recipe database with enhanced metadata
-        const recipeDatabase = {
-            metadata: {
-                version: "2.0",
-                lastUpdated: "2026-04-06",
-                totalRecipes: 9,
-                author: "Recipe Showcase Pro",
-                description: "Premium recipe collection with detailed nutritional data"
-            },
-
-            recipes: [
-                {
-                    id: "pasta-carbonara-001",
-                    title: "Creamy Pasta Carbonara",
-                    chef: "Chef Mario Rossi",
-                    category: "Italian Cuisine",
-                    cuisine: "Italian",
-                    difficulty: "Easy",
-                    rating: 4.8,
-                    reviewCount: 1247,
-                    prepTime: "10 min",
-                    cookTime: "15 min",
-                    totalTime: "25 min",
-                    servings: 4,
-                    costLevel: "Medium",
-                    season: "All Seasons",
-
-                    nutritionalInfo: {
-                        calories: 485,
-                        protein: "18g",
-                        carbs: "45g",
-                        fat: "28g",
-                        fiber: "2g",
-                        sugar: "3g"
-                    },
-
-                    dietary: {
-                        vegetarian: false,
-                        vegan: false,
-                        glutenFree: false,
-                        dairyFree: false,
-                        keto: false,
-                        lowCarb: false,
-                        allergies: ["Eggs", "Dairy"]
-                    },
-
-                    description: "Authentic Italian carbonara with perfectly emulsified egg sauce, crispy pancetta, and aged parmesan cheese.",
-                    shortDescription: "Classic Italian pasta with creamy egg sauce, pancetta, and parmesan cheese.",
-
-                    tags: ["Italian", "Pasta", "Dinner", "Comfort Food", "Quick"],
-                    equipment: ["Large pot", "Frying pan", "Whisk", "Tongs"],
-
-                    ingredients: [
-                        { item: "Egg yolks", amount: "4 large", emoji: "🥚", category: "dairy" },
-                        { item: "Parmesan cheese", amount: "1 cup grated", emoji: "🧀", category: "dairy" },
-                        { item: "Pancetta", amount: "150g diced", emoji: "🥓", category: "meat" },
-                        { item: "Spaghetti", amount: "400g", emoji: "🍝", category: "pasta" },
-                        { item: "Black pepper", amount: "Freshly ground", emoji: "🧂", category: "spice" },
-                        { item: "Butter", amount: "2 tbsp", emoji: "🧈", category: "dairy" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Boil Pasta",
-                            description: "Bring a large pot of salted water to boil. Cook spaghetti until al dente (about 2 minutes less than package instructions).",
-                            time: "12-15 min",
-                            tip: "Reserve 1 cup of pasta water before draining."
-                        },
-                        {
-                            step: 2,
-                            title: "Cook Pancetta",
-                            description: "While pasta cooks, fry pancetta in a large skillet over medium heat until crispy and golden.",
-                            time: "5-7 min",
-                            tip: "Don't drain the rendered fat - it's essential for the sauce!"
-                        },
-                        {
-                            step: 3,
-                            title: "Prepare Egg Mixture",
-                            description: "Whisk together egg yolks, grated parmesan, and plenty of black pepper in a bowl.",
-                            time: "2 min",
-                            tip: "Room temperature eggs emulsify better."
-                        },
-                        {
-                            step: 4,
-                            title: "Combine Everything",
-                            description: "Remove pancetta from heat. Add drained hot pasta to the skillet and toss quickly. Remove from heat and immediately pour in egg mixture, tossing vigorously.",
-                            time: "1-2 min",
-                            tip: "Work quickly to prevent scrambled eggs!"
-                        },
-                        {
-                            step: 5,
-                            title: "Serve Immediately",
-                            description: "Serve immediately with extra parmesan cheese and black pepper.",
-                            time: "1 min",
-                            tip: "Carbonara waits for no one - serve hot!"
-                        }
-                    ],
-
-                    tips: [
-                        "Use room temperature eggs for better emulsification",
-                        "Don't overcook the pasta - it continues cooking in the sauce",
-                        "Work quickly when combining hot pasta with egg mixture",
-                        "Freshly grated parmesan melts better than pre-grated"
-                    ],
-
-                    variations: [
-                        "Guanciale instead of pancetta for authentic Roman version",
-                        "Add peas for color and sweetness",
-                        "Use pecorino instead of parmesan for traditional flavor"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                },
-
-                {
-                    id: "avocado-toast-002",
-                    title: "Avocado Toast Delight",
-                    chef: "Chef Sarah Chen",
-                    category: "Breakfast",
-                    cuisine: "Modern",
-                    difficulty: "Very Easy",
-                    rating: 4.6,
-                    reviewCount: 892,
-                    prepTime: "5 min",
-                    cookTime: "5 min",
-                    totalTime: "10 min",
-                    servings: 2,
-                    costLevel: "Low",
-                    season: "All Seasons",
-
-                    nutritionalInfo: {
-                        calories: 320,
-                        protein: "12g",
-                        carbs: "35g",
-                        fat: "18g",
-                        fiber: "8g",
-                        sugar: "4g"
-                    },
-
-                    dietary: {
-                        vegetarian: true,
-                        vegan: true,
-                        glutenFree: false,
-                        dairyFree: true,
-                        keto: false,
-                        lowCarb: false,
-                        allergies: []
-                    },
-
-                    description: "Perfectly ripe avocado on artisanal sourdough toast, topped with poached eggs and chili flakes.",
-                    shortDescription: "Perfect breakfast with creamy avocado, poached eggs, and chili flakes.",
-
-                    tags: ["Breakfast", "Vegan", "Healthy", "Quick", "Trendy"],
-                    equipment: ["Toaster", "Knife", "Small pot"],
-
-                    ingredients: [
-                        { item: "Ripe avocados", amount: "2 medium", emoji: "🥑", category: "produce" },
-                        { item: "Sourdough bread", amount: "4 slices", emoji: "🍞", category: "bakery" },
-                        { item: "Poached eggs", amount: "4 large", emoji: "🥚", category: "dairy" },
-                        { item: "Sea salt", amount: "To taste", emoji: "🧂", category: "spice" },
-                        { item: "Black pepper", amount: "Freshly ground", emoji: "🧂", category: "spice" },
-                        { item: "Chili flakes", amount: "1 tsp", emoji: "🌶️", category: "spice" },
-                        { item: "Lemon juice", amount: "1 tbsp", emoji: "🍋", category: "produce" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Toast Bread",
-                            description: "Toast sourdough slices until golden and crispy.",
-                            time: "2-3 min",
-                            tip: "Use fresh, high-quality bread for best results."
-                        },
-                        {
-                            step: 2,
-                            title: "Prepare Avocado",
-                            description: "Cut avocados in half, remove pits, and scoop flesh into a bowl. Mash with lemon juice, salt, and pepper.",
-                            time: "3 min",
-                            tip: "Leave some texture - don't make it completely smooth."
-                        },
-                        {
-                            step: 3,
-                            title: "Poach Eggs",
-                            description: "Bring water to a gentle simmer. Crack eggs into small bowls, then slide into water. Poach for 3-4 minutes.",
-                            time: "4-5 min",
-                            tip: "Add a splash of vinegar to help eggs hold shape."
-                        },
-                        {
-                            step: 4,
-                            title: "Assemble Toast",
-                            description: "Spread mashed avocado generously on toast. Top with poached eggs, chili flakes, and extra seasoning.",
-                            time: "2 min",
-                            tip: "Serve immediately while everything is hot."
-                        }
-                    ],
-
-                    tips: [
-                        "Use perfectly ripe avocados for best flavor",
-                        "Don't skip the lemon juice - it prevents browning",
-                        "Fresh bread makes all the difference",
-                        "Experiment with different chili varieties"
-                    ],
-
-                    variations: [
-                        "Add smoked salmon for a savory twist",
-                        "Top with cherry tomatoes and feta",
-                        "Use different bread types (rye, whole grain, etc.)"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=400&q=80"
-                },
-
-                {
-                    id: "chocolate-lava-003",
-                    title: "Chocolate Lava Cake",
-                    chef: "Chef Pierre Dubois",
-                    category: "Desserts",
-                    cuisine: "French",
-                    difficulty: "Medium",
-                    rating: 4.9,
-                    reviewCount: 2156,
-                    prepTime: "15 min",
-                    cookTime: "12 min",
-                    totalTime: "27 min",
-                    servings: 4,
-                    costLevel: "Medium",
-                    season: "All Seasons",
-
-                    nutritionalInfo: {
-                        calories: 425,
-                        protein: "8g",
-                        carbs: "45g",
-                        fat: "26g",
-                        fiber: "3g",
-                        sugar: "35g"
-                    },
-
-                    dietary: {
-                        vegetarian: true,
-                        vegan: false,
-                        glutenFree: false,
-                        dairyFree: false,
-                        keto: false,
-                        lowCarb: false,
-                        allergies: ["Eggs", "Dairy", "Gluten"]
-                    },
-
-                    description: "Decadent chocolate cakes with molten centers, served with vanilla ice cream.",
-                    shortDescription: "Rich chocolate cakes with molten centers - dessert perfection!",
-
-                    tags: ["Dessert", "Chocolate", "French", "Romantic", "Special Occasion"],
-                    equipment: ["Ramekins", "Double boiler", "Whisk", "Oven"],
-
-                    ingredients: [
-                        { item: "Dark chocolate", amount: "200g (70% cocoa)", emoji: "🍫", category: "baking" },
-                        { item: "Butter", amount: "150g unsalted", emoji: "🧈", category: "dairy" },
-                        { item: "Granulated sugar", amount: "3/4 cup", emoji: "🍬", category: "baking" },
-                        { item: "Large eggs", amount: "4 whole", emoji: "🥚", category: "dairy" },
-                        { item: "All-purpose flour", amount: "1/3 cup", emoji: "🥄", category: "baking" },
-                        { item: "Vanilla ice cream", amount: "For serving", emoji: "🍦", category: "frozen" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Melt Chocolate",
-                            description: "Break chocolate into pieces and melt with butter in a double boiler over simmering water. Stir until smooth.",
-                            time: "5 min",
-                            tip: "Don't let water touch the bottom of the bowl."
-                        },
-                        {
-                            step: 2,
-                            title: "Whisk Eggs & Sugar",
-                            description: "In a separate bowl, whisk eggs and sugar until pale and thick (about 3-4 minutes).",
-                            time: "4 min",
-                            tip: "Mixture should form ribbons when you lift the whisk."
-                        },
-                        {
-                            step: 3,
-                            title: "Combine Mixtures",
-                            description: "Gently fold chocolate mixture into egg mixture. Then fold in sifted flour.",
-                            time: "3 min",
-                            tip: "Don't overmix - keep some air in the batter."
-                        },
-                        {
-                            step: 4,
-                            title: "Bake",
-                            description: "Pour batter into buttered ramekins. Bake at 200°C (400°F) for exactly 12 minutes.",
-                            time: "12 min",
-                            tip: "Oven temperature is crucial - don't overbake!"
-                        },
-                        {
-                            step: 5,
-                            title: "Serve Immediately",
-                            description: "Let rest 1 minute, then invert onto plates. Serve with ice cream.",
-                            time: "2 min",
-                            tip: "The center should be molten when you cut into it."
-                        }
-                    ],
-
-                    tips: [
-                        "Use high-quality dark chocolate for best flavor",
-                        "Don't overbake - the center should remain liquid",
-                        "Ramekins must be well-buttered to prevent sticking",
-                        "Serve immediately for maximum impact"
-                    ],
-
-                    variations: [
-                        "Add espresso powder for mocha version",
-                        "Mix in chopped nuts or chocolate chips",
-                        "Serve with fresh berries and whipped cream"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=400&q=80"
-                },
-
-                {
-                    id: "grilled-salmon-004",
-                    title: "Grilled Salmon with Asparagus",
-                    chef: "Chef Elena Petrov",
-                    category: "Main Course",
-                    cuisine: "Mediterranean",
-                    difficulty: "Easy",
-                    rating: 4.7,
-                    reviewCount: 1432,
-                    prepTime: "10 min",
-                    cookTime: "10 min",
-                    totalTime: "20 min",
-                    servings: 4,
-                    costLevel: "High",
-                    season: "Spring/Summer",
-
-                    nutritionalInfo: {
-                        calories: 380,
-                        protein: "35g",
-                        carbs: "6g",
-                        fat: "24g",
-                        fiber: "3g",
-                        sugar: "3g"
-                    },
-
-                    dietary: {
-                        vegetarian: false,
-                        vegan: false,
-                        glutenFree: true,
-                        dairyFree: true,
-                        keto: true,
-                        lowCarb: true,
-                        allergies: ["Fish"]
-                    },
-
-                    description: "Fresh Atlantic salmon fillets grilled to perfection with tender asparagus spears.",
-                    shortDescription: "Fresh salmon fillet grilled to perfection with tender asparagus spears.",
-
-                    tags: ["Seafood", "Healthy", "Grilled", "Mediterranean", "Low Carb"],
-                    equipment: ["Grill", "Tongs", "Brush"],
-
-                    ingredients: [
-                        { item: "Salmon fillets", amount: "4 (6oz each)", emoji: "🐟", category: "seafood" },
-                        { item: "Asparagus", amount: "1 bunch (about 1 lb)", emoji: "🥦", category: "produce" },
-                        { item: "Kosher salt", amount: "1 tsp", emoji: "🧂", category: "spice" },
-                        { item: "Black pepper", amount: "1/2 tsp", emoji: "🧂", category: "spice" },
-                        { item: "Olive oil", amount: "3 tbsp", emoji: "🫒", category: "pantry" },
-                        { item: "Lemon wedges", amount: "4", emoji: "🍋", category: "produce" },
-                        { item: "Garlic cloves", amount: "3 minced", emoji: "🧄", category: "produce" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Preheat Grill",
-                            description: "Preheat grill to medium-high heat (about 400°F). Clean and oil grates.",
-                            time: "5 min",
-                            tip: "Make sure grill is hot before adding food."
-                        },
-                        {
-                            step: 2,
-                            title: "Prepare Ingredients",
-                            description: "Pat salmon dry. Trim asparagus ends. Mix oil, garlic, salt, and pepper.",
-                            time: "5 min",
-                            tip: "Don't remove salmon skin - it protects the flesh."
-                        },
-                        {
-                            step: 3,
-                            title: "Season Everything",
-                            description: "Brush salmon and asparagus with seasoned oil mixture.",
-                            time: "2 min",
-                            tip: "Season asparagus generously for best flavor."
-                        },
-                        {
-                            step: 4,
-                            title: "Grill Salmon",
-                            description: "Place salmon skin-side down first. Grill 4-5 minutes per side.",
-                            time: "8-10 min",
-                            tip: "Don't move salmon until it releases easily from grill."
-                        },
-                        {
-                            step: 5,
-                            title: "Grill Asparagus",
-                            description: "Add asparagus to grill. Cook 3-4 minutes until tender-crisp.",
-                            time: "3-4 min",
-                            tip: "Grill asparagus perpendicular to grates."
-                        },
-                        {
-                            step: 6,
-                            title: "Serve",
-                            description: "Serve immediately with lemon wedges for squeezing.",
-                            time: "1 min",
-                            tip: "Squeeze fresh lemon juice over everything."
-                        }
-                    ],
-
-                    tips: [
-                        "Choose center-cut salmon fillets of similar thickness",
-                        "Don't overcook - salmon is best medium-rare",
-                        "Asparagus should still have some crunch",
-                        "Fresh lemon juice brightens the whole dish"
-                    ],
-
-                    variations: [
-                        "Add herbs like dill or parsley to the seasoning",
-                        "Serve over quinoa or couscous",
-                        "Add cherry tomatoes to the grill for the last 2 minutes"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                },
-
-                {
-                    id: "margherita-pizza-005",
-                    title: "Classic Margherita Pizza",
-                    chef: "Chef Giovanni Marino",
-                    category: "Italian Cuisine",
-                    cuisine: "Italian",
-                    difficulty: "Medium",
-                    rating: 4.8,
-                    reviewCount: 1876,
-                    prepTime: "15 min",
-                    cookTime: "15 min",
-                    totalTime: "30 min",
-                    servings: 2,
-                    costLevel: "Medium",
-                    season: "All Seasons",
-
-                    nutritionalInfo: {
-                        calories: 650,
-                        protein: "28g",
-                        carbs: "85g",
-                        fat: "22g",
-                        fiber: "4g",
-                        sugar: "8g"
-                    },
-
-                    dietary: {
-                        vegetarian: true,
-                        vegan: false,
-                        glutenFree: false,
-                        dairyFree: false,
-                        keto: false,
-                        lowCarb: false,
-                        allergies: ["Dairy", "Gluten"]
-                    },
-
-                    description: "Traditional Neapolitan pizza with San Marzano tomatoes, fresh mozzarella, and basil.",
-                    shortDescription: "Traditional Neapolitan pizza with fresh mozzarella, tomatoes, and basil.",
-
-                    tags: ["Italian", "Pizza", "Vegetarian", "Classic", "Homemade"],
-                    equipment: ["Pizza stone", "Rolling pin", "Pizza peel"],
-
-                    ingredients: [
-                        { item: "Pizza dough", amount: "1 lb fresh", emoji: "🍕", category: "bakery" },
-                        { item: "San Marzano tomatoes", amount: "1 cup crushed", emoji: "🍅", category: "canned" },
-                        { item: "Fresh mozzarella", amount: "8 oz sliced", emoji: "🧀", category: "dairy" },
-                        { item: "Fresh basil leaves", amount: "1/4 cup", emoji: "🌿", category: "herbs" },
-                        { item: "Kosher salt", amount: "1 tsp", emoji: "🧂", category: "spice" },
-                        { item: "Black pepper", amount: "1/2 tsp", emoji: "🧂", category: "spice" },
-                        { item: "Extra virgin olive oil", amount: "2 tbsp", emoji: "🫒", category: "pantry" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Preheat Oven",
-                            description: "Place pizza stone in oven and preheat to 475°F (245°C) for at least 30 minutes.",
-                            time: "30 min",
-                            tip: "Very hot oven is essential for authentic pizza."
-                        },
-                        {
-                            step: 2,
-                            title: "Prepare Dough",
-                            description: "On floured surface, stretch dough into 12-inch circle. Don't use rolling pin.",
-                            time: "5 min",
-                            tip: "Let dough rest if it springs back too much."
-                        },
-                        {
-                            step: 3,
-                            title: "Add Sauce",
-                            description: "Spread thin layer of tomato sauce, leaving 1-inch border. Season with salt and pepper.",
-                            time: "2 min",
-                            tip: "Sauce should be sparse - pizza isn't soup!"
-                        },
-                        {
-                            step: 4,
-                            title: "Add Toppings",
-                            description: "Tear mozzarella into pieces and distribute evenly. Add fresh basil leaves.",
-                            time: "2 min",
-                            tip: "Fresh basil goes on before baking for best flavor."
-                        },
-                        {
-                            step: 5,
-                            title: "Bake Pizza",
-                            description: "Carefully transfer to hot stone. Bake 12-15 minutes until crust is golden and cheese bubbly.",
-                            time: "12-15 min",
-                            tip: "Rotate pizza halfway through for even cooking."
-                        },
-                        {
-                            step: 6,
-                            title: "Finish & Serve",
-                            description: "Drizzle with olive oil. Let rest 2 minutes before slicing.",
-                            time: "3 min",
-                            tip: "Best served immediately while hot and fresh."
-                        }
-                    ],
-
-                    tips: [
-                        "Use high-quality ingredients - they make the difference",
-                        "Don't overload with toppings",
-                        "Fresh basil is essential for authentic flavor",
-                        "Let dough come to room temperature before stretching"
-                    ],
-
-                    variations: [
-                        "Add prosciutto for Margherita di Bufala",
-                        "Use different cheeses (gorgonzola, ricotta)",
-                        "Add arugula after baking for peppery bite"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                },
-
-                {
-                    id: "chicken-stir-fry-006",
-                    title: "Chicken Vegetable Stir Fry",
-                    chef: "Chef Li Wei",
-                    category: "Asian Cuisine",
-                    cuisine: "Chinese",
-                    difficulty: "Easy",
-                    rating: 4.5,
-                    reviewCount: 967,
-                    prepTime: "15 min",
-                    cookTime: "10 min",
-                    totalTime: "25 min",
-                    servings: 4,
-                    costLevel: "Low",
-                    season: "All Seasons",
-
-                    nutritionalInfo: {
-                        calories: 285,
-                        protein: "32g",
-                        carbs: "18g",
-                        fat: "10g",
-                        fiber: "4g",
-                        sugar: "8g"
-                    },
-
-                    dietary: {
-                        vegetarian: false,
-                        vegan: false,
-                        glutenFree: false,
-                        dairyFree: true,
-                        keto: false,
-                        lowCarb: false,
-                        allergies: []
-                    },
-
-                    description: "Quick and healthy stir fry with tender chicken and crisp vegetables in savory sauce.",
-                    shortDescription: "Quick and healthy stir fry with tender chicken and colorful vegetables.",
-
-                    tags: ["Asian", "Chicken", "Healthy", "Quick", "Weeknight"],
-                    equipment: ["Wok or large skillet", "Cutting board", "Sharp knife"],
-
-                    ingredients: [
-                        { item: "Chicken breast", amount: "1 lb boneless", emoji: "🍗", category: "meat" },
-                        { item: "Carrots", amount: "2 medium", emoji: "🥕", category: "produce" },
-                        { item: "Broccoli florets", amount: "1 cup", emoji: "🥦", category: "produce" },
-                        { item: "Bell pepper", amount: "1 red", emoji: "🫑", category: "produce" },
-                        { item: "Garlic cloves", amount: "3 minced", emoji: "🧄", category: "produce" },
-                        { item: "Soy sauce", amount: "1/4 cup", emoji: "🥄", category: "pantry" },
-                        { item: "Vegetable oil", amount: "2 tbsp", emoji: "🫒", category: "pantry" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Prepare Ingredients",
-                            description: "Cut chicken into bite-sized pieces. Slice carrots, broccoli, and bell pepper into thin strips.",
-                            time: "10 min",
-                            tip: "Cut everything to similar size for even cooking."
-                        },
-                        {
-                            step: 2,
-                            title: "Heat Wok",
-                            description: "Heat oil in wok or large skillet over high heat until smoking hot.",
-                            time: "2 min",
-                            tip: "High heat is essential for good stir fry."
-                        },
-                        {
-                            step: 3,
-                            title: "Cook Chicken",
-                            description: "Add chicken and stir fry until no longer pink, about 3-4 minutes.",
-                            time: "4 min",
-                            tip: "Don't overcrowd the pan - cook in batches if needed."
-                        },
-                        {
-                            step: 4,
-                            title: "Add Vegetables",
-                            description: "Add garlic, then vegetables. Stir fry for 3-4 minutes until crisp-tender.",
-                            time: "4 min",
-                            tip: "Keep vegetables moving constantly."
-                        },
-                        {
-                            step: 5,
-                            title: "Add Sauce",
-                            description: "Pour in soy sauce and toss everything together for 1 minute.",
-                            time: "1 min",
-                            tip: "Sauce will thicken and coat everything."
-                        },
-                        {
-                            step: 6,
-                            title: "Serve",
-                            description: "Serve immediately over steamed rice or noodles.",
-                            time: "1 min",
-                            tip: "Stir fry is best served hot and fresh."
-                        }
-                    ],
-
-                    tips: [
-                        "Prep all ingredients before starting - stir fry moves fast",
-                        "Use high heat and keep ingredients moving",
-                        "Don't overcook vegetables - they should be crisp",
-                        "Serve immediately for best texture"
-                    ],
-
-                    variations: [
-                        "Add ginger, chili, or other aromatics",
-                        "Use different proteins (beef, tofu, shrimp)",
-                        "Experiment with vegetable combinations"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                },
-
-                {
-                    id: "berry-smoothie-007",
-                    title: "Berry Smoothie Bowl",
-                    chef: "Chef Anna Svensson",
-                    category: "Breakfast",
-                    cuisine: "Modern",
-                    difficulty: "Very Easy",
-                    rating: 4.4,
-                    reviewCount: 723,
-                    prepTime: "5 min",
-                    cookTime: "0 min",
-                    totalTime: "5 min",
-                    servings: 1,
-                    costLevel: "Low",
-                    season: "Summer",
-
-                    nutritionalInfo: {
-                        calories: 285,
-                        protein: "12g",
-                        carbs: "45g",
-                        fat: "8g",
-                        fiber: "10g",
-                        sugar: "28g"
-                    },
-
-                    dietary: {
-                        vegetarian: true,
-                        vegan: true,
-                        glutenFree: true,
-                        dairyFree: true,
-                        keto: false,
-                        lowCarb: false,
-                        allergies: []
-                    },
-
-                    description: "Refreshing bowl packed with antioxidants, topped with fresh fruits and superfoods.",
-                    shortDescription: "Refreshing bowl packed with antioxidants and topped with fresh fruits.",
-
-                    tags: ["Breakfast", "Smoothie", "Healthy", "Vegan", "Antioxidant"],
-                    equipment: ["Blender", "Bowl", "Spoon"],
-
-                    ingredients: [
-                        { item: "Mixed berries", amount: "1 cup (strawberries, blueberries, raspberries)", emoji: "🫐", category: "frozen" },
-                        { item: "Banana", amount: "1 medium", emoji: "🍌", category: "produce" },
-                        { item: "Greek yogurt", amount: "1/2 cup", emoji: "🥛", category: "dairy" },
-                        { item: "Coconut milk", amount: "1/4 cup", emoji: "🥥", category: "canned" },
-                        { item: "Chia seeds", amount: "1 tbsp", emoji: "🌰", category: "pantry" },
-                        { item: "Honey", amount: "1 tsp (optional)", emoji: "🍯", category: "pantry" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Blend Base",
-                            description: "Add berries, banana, yogurt, and coconut milk to blender.",
-                            time: "1 min",
-                            tip: "Use frozen berries for thicker consistency."
-                        },
-                        {
-                            step: 2,
-                            title: "Blend Smooth",
-                            description: "Blend on high until completely smooth and creamy.",
-                            time: "1 min",
-                            tip: "Stop and scrape sides if needed."
-                        },
-                        {
-                            step: 3,
-                            title: "Pour into Bowl",
-                            description: "Pour thick smoothie into a bowl.",
-                            time: "30 sec",
-                            tip: "It should be thick enough to eat with a spoon."
-                        },
-                        {
-                            step: 4,
-                            title: "Add Toppings",
-                            description: "Top with chia seeds, fresh fruits, and a drizzle of honey.",
-                            time: "1 min",
-                            tip: "Get creative with toppings for visual appeal."
-                        },
-                        {
-                            step: 5,
-                            title: "Serve Immediately",
-                            description: "Enjoy immediately while cold and fresh.",
-                            time: "1 min",
-                            tip: "Smoothie bowls are best eaten right away."
-                        }
-                    ],
-
-                    tips: [
-                        "Use frozen fruit for thicker, spoonable consistency",
-                        "Blend in stages for smoother texture",
-                        "Don't overblend - some texture is good",
-                        "Experiment with different fruit combinations"
-                    ],
-
-                    variations: [
-                        "Add spinach or kale for green smoothie bowl",
-                        "Use different milks (almond, oat, soy)",
-                        "Add protein powder for post-workout version"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1571771019784-3ff35f4f4277?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1571771019784-3ff35f4f4277?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                },
-
-                {
-                    id: "beef-tacos-008",
-                    title: "Spicy Beef Tacos",
-                    chef: "Chef Carlos Mendoza",
-                    category: "Mexican Cuisine",
-                    cuisine: "Mexican",
-                    difficulty: "Easy",
-                    rating: 4.6,
-                    reviewCount: 1154,
-                    prepTime: "10 min",
-                    cookTime: "10 min",
-                    totalTime: "20 min",
-                    servings: 4,
-                    costLevel: "Low",
-                    season: "All Seasons",
-
-                    nutritionalInfo: {
-                        calories: 425,
-                        protein: "28g",
-                        carbs: "32g",
-                        fat: "22g",
-                        fiber: "4g",
-                        sugar: "4g"
-                    },
-
-                    dietary: {
-                        vegetarian: false,
-                        vegan: false,
-                        glutenFree: false,
-                        dairyFree: false,
-                        keto: false,
-                        lowCarb: false,
-                        allergies: []
-                    },
-
-                    description: "Flavorful ground beef tacos with fresh toppings and authentic Mexican spices.",
-                    shortDescription: "Flavorful ground beef tacos with fresh toppings and spicy seasoning.",
-
-                    tags: ["Mexican", "Beef", "Spicy", "Street Food", "Family"],
-                    equipment: ["Skillet", "Spatula", "Tortilla warmer"],
-
-                    ingredients: [
-                        { item: "Ground beef", amount: "1 lb (80% lean)", emoji: "🥩", category: "meat" },
-                        { item: "Small tortillas", amount: "8 corn", emoji: "🌮", category: "bakery" },
-                        { item: "White onion", amount: "1 medium diced", emoji: "🧅", category: "produce" },
-                        { item: "Garlic cloves", amount: "2 minced", emoji: "🧄", category: "produce" },
-                        { item: "Taco seasoning", amount: "2 tbsp", emoji: "🌶️", category: "spice" },
-                        { item: "Avocado", amount: "2 sliced", emoji: "🥑", category: "produce" },
-                        { item: "Salsa", amount: "1 cup", emoji: "🥑", category: "pantry" },
-                        { item: "Cheddar cheese", amount: "1 cup shredded", emoji: "🧀", category: "dairy" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Brown Beef",
-                            description: "Cook ground beef in large skillet over medium-high heat until no longer pink.",
-                            time: "5 min",
-                            tip: "Break up beef with spatula as it cooks."
-                        },
-                        {
-                            step: 2,
-                            title: "Add Aromatics",
-                            description: "Add onion and garlic to beef. Cook until softened, about 3 minutes.",
-                            time: "3 min",
-                            tip: "Stir frequently to prevent burning."
-                        },
-                        {
-                            step: 3,
-                            title: "Season Meat",
-                            description: "Stir in taco seasoning and 1/4 cup water. Simmer until thickened.",
-                            time: "3 min",
-                            tip: "Adjust seasoning to taste - add more spice if desired."
-                        },
-                        {
-                            step: 4,
-                            title: "Warm Tortillas",
-                            description: "Heat tortillas in dry skillet or microwave until pliable.",
-                            time: "2 min",
-                            tip: "Wrap in foil to keep warm."
-                        },
-                        {
-                            step: 5,
-                            title: "Assemble Tacos",
-                            description: "Fill tortillas with beef mixture. Top with cheese, avocado, and salsa.",
-                            time: "2 min",
-                            tip: "Let everyone build their own tacos."
-                        }
-                    ],
-
-                    tips: [
-                        "Use fresh tortillas for best texture",
-                        "Don't overcook the beef - it should be juicy",
-                        "Make your own taco seasoning for better flavor",
-                        "Prep toppings ahead for easy assembly"
-                    ],
-
-                    variations: [
-                        "Use ground turkey or chicken instead of beef",
-                        "Add beans or rice for heartier tacos",
-                        "Make breakfast tacos with eggs and potatoes"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                },
-
-                {
-                    id: "vegetable-curry-009",
-                    title: "Vegetable Coconut Curry",
-                    chef: "Chef Priya Sharma",
-                    category: "Indian Cuisine",
-                    cuisine: "Indian",
-                    difficulty: "Medium",
-                    rating: 4.7,
-                    reviewCount: 1345,
-                    prepTime: "20 min",
-                    cookTime: "25 min",
-                    totalTime: "45 min",
-                    servings: 4,
-                    costLevel: "Low",
-                    season: "All Seasons",
-
-                    nutritionalInfo: {
-                        calories: 285,
-                        protein: "8g",
-                        carbs: "35g",
-                        fat: "16g",
-                        fiber: "8g",
-                        sugar: "12g"
-                    },
-
-                    dietary: {
-                        vegetarian: true,
-                        vegan: true,
-                        glutenFree: true,
-                        dairyFree: true,
-                        keto: false,
-                        lowCarb: false,
-                        allergies: []
-                    },
-
-                    description: "Aromatic curry with mixed vegetables in creamy coconut sauce, served with basmati rice.",
-                    shortDescription: "Aromatic curry with mixed vegetables in creamy coconut sauce.",
-
-                    tags: ["Indian", "Vegetarian", "Spicy", "Comfort Food", "Vegan"],
-                    equipment: ["Large pot", "Wooden spoon", "Chef's knife"],
-
-                    ingredients: [
-                        { item: "Coconut milk", amount: "1 can (14 oz)", emoji: "🥥", category: "canned" },
-                        { item: "Carrots", amount: "2 medium sliced", emoji: "🥕", category: "produce" },
-                        { item: "Potatoes", amount: "2 medium diced", emoji: "🥔", category: "produce" },
-                        { item: "Bell pepper", amount: "1 red sliced", emoji: "🫑", category: "produce" },
-                        { item: "White onion", amount: "1 large diced", emoji: "🧅", category: "produce" },
-                        { item: "Curry paste", amount: "2 tbsp red", emoji: "🍛", category: "pantry" },
-                        { item: "Garlic cloves", amount: "3 minced", emoji: "🧄", category: "produce" },
-                        { item: "Ginger", amount: "1 tbsp grated", emoji: "🫚", category: "produce" },
-                        { item: "Vegetable oil", amount: "2 tbsp", emoji: "🫒", category: "pantry" }
-                    ],
-
-                    instructions: [
-                        {
-                            step: 1,
-                            title: "Prep Vegetables",
-                            description: "Cut all vegetables into uniform bite-sized pieces.",
-                            time: "10 min",
-                            tip: "Uniform size ensures even cooking."
-                        },
-                        {
-                            step: 2,
-                            title: "Sauté Aromatics",
-                            description: "Heat oil in large pot. Add onion, garlic, and ginger. Cook until fragrant.",
-                            time: "5 min",
-                            tip: "Don't let garlic burn - stir constantly."
-                        },
-                        {
-                            step: 3,
-                            title: "Add Curry Paste",
-                            description: "Stir in curry paste and cook for 2 minutes to release flavors.",
-                            time: "2 min",
-                            tip: "Curry paste should become fragrant."
-                        },
-                        {
-                            step: 4,
-                            title: "Add Vegetables",
-                            description: "Add carrots, potatoes, and bell pepper. Stir to coat with curry.",
-                            time: "3 min",
-                            tip: "Harder vegetables go in first."
-                        },
-                        {
-                            step: 5,
-                            title: "Add Coconut Milk",
-                            description: "Pour in coconut milk and 1 cup water. Bring to simmer.",
-                            time: "5 min",
-                            tip: "Shake can well before opening."
-                        },
-                        {
-                            step: 6,
-                            title: "Simmer",
-                            description: "Reduce heat and simmer 15-20 minutes until vegetables are tender.",
-                            time: "20 min",
-                            tip: "Stir occasionally to prevent sticking."
-                        },
-                        {
-                            step: 7,
-                            title: "Serve",
-                            description: "Serve hot over basmati rice or with naan bread.",
-                            time: "2 min",
-                            tip: "Garnish with fresh cilantro if desired."
-                        }
-                    ],
-
-                    tips: [
-                        "Use full-fat coconut milk for richest flavor",
-                        "Adjust spice level by choosing mild or hot curry paste",
-                        "Don't rush the simmering - vegetables need time to absorb flavors",
-                        "Leftovers taste even better the next day"
-                    ],
-
-                    variations: [
-                        "Add chickpeas or tofu for protein",
-                        "Include cauliflower or eggplant",
-                        "Make it Thai-style with lemongrass and lime"
-                    ],
-
-                    image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                    thumbnail: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                }
-            ]
-        };
-
-        // ==========================================
-        // LEGACY RECIPE OBJECT (for backward compatibility)
-        // ==========================================
-        // Keeping the old simple object structure for existing code
         const recipes = {};
-        recipeDatabase.recipes.forEach((recipe, index) => {
-            const recipeKey = 'recipe' + (index + 1);
-            recipes[recipeKey] = {
-                title: recipe.title,
-                time: recipe.totalTime,
-                difficulty: recipe.difficulty,
-                description: recipe.shortDescription,
-                tags: recipe.tags,
-                ingredients: Array.isArray(recipe.ingredients)
-                    ? recipe.ingredients.map(ing => typeof ing === 'string' ? ing : `${ing.emoji} ${ing.amount} ${ing.item}`)
-                    : [],
-                instructions: Array.isArray(recipe.instructions)
-                    ? recipe.instructions.map(step => typeof step === 'string' ? { description: step } : step)
-                    : []
-            };
-        });
+        const grid = document.getElementById('recipesGrid');
+        const statusElement = document.getElementById('recipeStatus');
 
-        /**
-         * Render user-created recipes stored in localStorage
-         */
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function estimateDifficulty(ingredientCount) {
+            if (ingredientCount >= 12) return 'Hard';
+            if (ingredientCount >= 8) return 'Medium';
+            return 'Easy';
+        }
+
+        function estimateTime(stepCount, ingredientCount) {
+            const totalMinutes = Math.max(15, (stepCount * 7) + ingredientCount);
+            return `${totalMinutes} min`;
+        }
+
+        function extractIngredients(meal) {
+            const ingredients = [];
+
+            for (let index = 1; index <= 20; index += 1) {
+                const ingredient = meal[`strIngredient${index}`];
+                const measure = meal[`strMeasure${index}`];
+
+                if (!ingredient || !ingredient.trim()) {
+                    continue;
+                }
+
+                ingredients.push(`${measure ? measure.trim() + ' ' : ''}${ingredient.trim()}`.trim());
+            }
+
+            return ingredients;
+        }
+
+        function splitInstructions(text, meal) {
+            const blocks = (text || '')
+                .replace(/\r/g, '\n')
+                .split(/\n+/)
+                .map(step => step.trim())
+                .filter(Boolean);
+
+            const steps = blocks.length > 1
+                ? blocks
+                : (text || '')
+                    .split(/(?<=[.!?])\s+/)
+                    .map(step => step.trim())
+                    .filter(Boolean);
+
+            return steps.map((description, index) => {
+                const instruction = { description };
+
+                if (index === 0 && meal.strYoutube) {
+                    instruction.video = meal.strYoutube;
+                }
+
+                return instruction;
+            });
+        }
+
+        function normalizeMealDbRecipe(meal, index) {
+            const ingredients = extractIngredients(meal);
+            const instructions = splitInstructions(meal.strInstructions, meal);
+            const tags = [meal.strCategory, meal.strArea, ...(meal.strTags ? meal.strTags.split(',') : [])]
+                .map(tag => tag && tag.trim())
+                .filter(Boolean)
+                .slice(0, 6);
+            const description = meal.strInstructions
+                ? `${meal.strInstructions.trim().slice(0, 140)}${meal.strInstructions.trim().length > 140 ? '...' : ''}`
+                : 'Recipe details from TheMealDB.';
+
+            return {
+                key: `mealDbRecipe${index + 1}`,
+                title: meal.strMeal,
+                time: estimateTime(instructions.length || 3, ingredients.length || 5),
+                difficulty: estimateDifficulty(ingredients.length),
+                description,
+                tags,
+                ingredients,
+                instructions,
+                image: meal.strMealThumb,
+                source: meal.strSource || ''
+            };
+        }
+
+        function animateCard(card, index) {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 120);
+        }
+
+        function addRecipeCard(recipe) {
+            recipes[recipe.key] = recipe;
+
+            const card = document.createElement('div');
+            card.className = 'recipe-card';
+            card.setAttribute('onclick', `toggleDetails('${recipe.key}')`);
+            card.innerHTML = `
+                <img src="${escapeHtml(recipe.image || 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=1000&q=80')}"
+                     alt="${escapeHtml(recipe.title)}" class="recipe-image">
+                <div class="recipe-content">
+                    <h3 class="recipe-title">${escapeHtml(recipe.title)}</h3>
+                    <div class="recipe-meta">
+                        <span class="time-icon">${escapeHtml(recipe.time || 'N/A')}</span>
+                        <span class="difficulty-icon">${escapeHtml(recipe.difficulty || 'Medium')}</span>
+                    </div>
+                    <p class="recipe-description">${escapeHtml(recipe.description || 'Recipe details available in the modal.')}</p>
+                    <div class="recipe-tags">
+                        ${(recipe.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+                    </div>
+                    <button class="expand-btn" type="button"><i class="fas fa-video"></i> View Recipe</button>
+                </div>
+            `;
+
+            grid.appendChild(card);
+            animateCard(card, grid.querySelectorAll('.recipe-card').length - 1);
+        }
+
+        function clearStatus() {
+            if (statusElement && statusElement.isConnected) {
+                statusElement.remove();
+            }
+        }
+
+        function showStatus(message, isError = false) {
+            if (!statusElement) return;
+            statusElement.textContent = message;
+            statusElement.className = isError ? 'recipe-status error' : 'recipe-status';
+        }
+
         function loadStoredRecipes() {
             const storedRecipes = JSON.parse(localStorage.getItem('userRecipes') || '[]');
-            const grid = document.querySelector('.recipes-grid');
 
             storedRecipes.forEach((recipe, index) => {
-                const recipeKey = 'userRecipe' + (index + 1);
-                recipes[recipeKey] = {
+                addRecipeCard({
+                    key: `userRecipe${index + 1}`,
                     title: recipe.title,
                     time: recipe.totalTime || recipe.time || 'N/A',
                     difficulty: recipe.difficulty || 'Medium',
-                    description: recipe.shortDescription || recipe.description || '',
+                    description: recipe.shortDescription || recipe.description || 'User-added recipe.',
                     tags: recipe.tags || [],
                     ingredients: recipe.ingredients || [],
                     instructions: Array.isArray(recipe.instructions)
                         ? recipe.instructions.map(step => typeof step === 'string' ? { description: step } : step)
-                        : []
-                };
-
-                const userCard = document.createElement('div');
-                userCard.className = 'recipe-card';
-                userCard.setAttribute('onclick', `toggleDetails('${recipeKey}')`);
-                userCard.innerHTML = `
-                    <img src="${recipe.image || 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}"
-                         alt="${recipe.title}" class="recipe-image">
-                    <div class="recipe-content">
-                        <h3 class="recipe-title">${recipe.title}</h3>
-                        <div class="recipe-meta">
-                            <span class="time-icon">${recipe.time || recipe.totalTime || 'N/A'}</span>
-                            <span class="difficulty-icon">${recipe.difficulty || 'Medium'}</span>
-                        </div>
-                        <p class="recipe-description">${recipe.shortDescription || recipe.description || ''}</p>
-                        <div class="recipe-tags">
-                            ${(recipe.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                        </div>
-                        <button class="expand-btn"><i class="fas fa-video"></i> View Recipe</button>
-                    </div>
-                `;
-                grid.appendChild(userCard);
+                        : [],
+                    image: recipe.image || 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=1000&q=80',
+                    source: ''
+                });
             });
         }
 
-        loadStoredRecipes();
+        async function loadMealDbRecipes() {
+            showStatus('Loading recipes from TheMealDB...');
 
-        // ==========================================
-        // MODAL FUNCTIONALITY
-        // ==========================================
+            try {
+                const response = await fetch('https://www.themealdb.com/api/json/v1/1/latest.php');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                const meals = Array.isArray(data.meals) ? data.meals.slice(0, 9) : [];
+
+                clearStatus();
+
+                meals.forEach((meal, index) => {
+                    addRecipeCard(normalizeMealDbRecipe(meal, index));
+                });
+
+                if (meals.length === 0 && !Object.keys(recipes).length) {
+                    showStatus('No recipes were returned from TheMealDB.', true);
+                }
+            } catch (error) {
+                console.error('Failed to load TheMealDB recipes:', error);
+
+                if (!Object.keys(recipes).length) {
+                    showStatus('Could not load recipes from TheMealDB. Please check your internet connection and try again.', true);
+                } else {
+                    clearStatus();
+                }
+            }
+        }
 
         function isYouTubeUrl(url) {
             return /youtube\.com|youtu\.be/.test(url);
@@ -1734,106 +675,80 @@
             let mediaHtml = '';
 
             if (imageUrl) {
-                mediaHtml += `\n                            <div class="step-media"><img src="${imageUrl}" alt="Step ${index + 1} image"></div>`;
+                mediaHtml += `\n                            <div class="step-media"><img src="${escapeHtml(imageUrl)}" alt="Step ${index + 1} image"></div>`;
             }
 
             if (videoUrl) {
                 if (isYouTubeUrl(videoUrl)) {
-                    mediaHtml += `\n                            <div class="step-media"><iframe src="${getYouTubeEmbedUrl(videoUrl)}" allowfullscreen></iframe></div>`;
+                    mediaHtml += `\n                            <div class="step-media"><iframe src="${escapeHtml(getYouTubeEmbedUrl(videoUrl))}" allowfullscreen></iframe></div>`;
                 } else {
-                    mediaHtml += `\n                            <div class="step-media"><video controls src="${videoUrl}"></video></div>`;
+                    mediaHtml += `\n                            <div class="step-media"><video controls src="${escapeHtml(videoUrl)}"></video></div>`;
                 }
             }
 
-            return `<li>${description}${mediaHtml}</li>`;
+            return `<li>${escapeHtml(description)}${mediaHtml}</li>`;
         }
 
-        /**
-         * Toggles the recipe details modal for a specific recipe
-         * @param {string} recipeId - The ID of the recipe to display (e.g., 'recipe1')
-         */
         function toggleDetails(recipeId) {
-            // Retrieve recipe data from the recipes object
             const recipe = recipes[recipeId];
-            if (!recipe) return; // Exit if recipe not found
+            if (!recipe) return;
 
-            // Get modal content container and populate with recipe details
             const modalContent = document.getElementById('modalRecipeContent');
+            const sourceHtml = recipe.source
+                ? `<p class="modal-recipe-description"><a href="${escapeHtml(recipe.source)}" target="_blank" rel="noopener noreferrer">Original source</a></p>`
+                : '';
+
             modalContent.innerHTML = `
                 <div class="modal-recipe-header">
-                    <h2 class="modal-recipe-title">${recipe.title}</h2>
+                    <h2 class="modal-recipe-title">${escapeHtml(recipe.title)}</h2>
                     <div class="modal-recipe-meta">
-                        <span>⏱️ ${recipe.time}</span>
-                        <span>⭐ ${recipe.difficulty}</span>
+                        <span>Time: ${escapeHtml(recipe.time || 'N/A')}</span>
+                        <span>Difficulty: ${escapeHtml(recipe.difficulty || 'Medium')}</span>
                     </div>
                 </div>
                 <div class="modal-recipe-body">
-                    <p class="modal-recipe-description">${recipe.description}</p>
+                    <p class="modal-recipe-description">${escapeHtml(recipe.description || '')}</p>
                     <div class="modal-recipe-tags">
-                        ${recipe.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        ${(recipe.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
                     </div>
                     <div class="modal-ingredients-grid">
-                        ${recipe.ingredients.map(ing => `<div class="modal-ingredient">${ing}</div>`).join('')}
+                        ${(recipe.ingredients || []).map(ing => `<div class="modal-ingredient">${escapeHtml(ing)}</div>`).join('')}
                     </div>
                     <div class="modal-instructions">
                         <h4>Instructions:</h4>
                         <ol>
-                            ${recipe.instructions.map((inst, idx) => renderInstructionStep(inst, idx)).join('')}
+                            ${(recipe.instructions || []).map((inst, idx) => renderInstructionStep(inst, idx)).join('')}
                         </ol>
                     </div>
+                    ${sourceHtml}
                 </div>
             `;
 
-            // Display modal and prevent background scrolling
             document.getElementById('recipeModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
 
-        /**
-         * Closes the recipe details modal
-         */
         function closeModal() {
-            // Hide modal and restore background scrolling
             document.getElementById('recipeModal').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 
-        // ==========================================
-        // EVENT LISTENERS
-        // ==========================================
-
-        // Close modal when clicking outside the modal content
         window.onclick = function(event) {
             const modal = document.getElementById('recipeModal');
-            if (event.target == modal) {
+            if (event.target === modal) {
                 closeModal();
             }
-        }
+        };
 
-        // Close modal when pressing the Escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
             }
         });
 
-        // ==========================================
-        // ANIMATION EFFECTS
-        // ==========================================
-
-        // Add staggered fade-in animation to recipe cards on page load
-        document.querySelectorAll('.recipe-card').forEach((card, index) => {
-            // Start cards invisible and slightly below their final position
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(50px)';
-            
-            // Animate cards in sequence with increasing delay
-            setTimeout(() => {
-                card.style.transition = 'all 0.6s ease';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 200); // 200ms delay between each card
-        });
+        loadStoredRecipes();
+        loadMealDbRecipes();
     </script>
 </body>
 </html>
+
