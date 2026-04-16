@@ -1,33 +1,73 @@
-<!-- index.html -->
-
+<!-- 
+  ============================================
+  LANDING PAGE - indexMain.html - BEGINNER GUIDE
+  ============================================
+  FILE PURPOSE: Home page with ingredient tag search system
+  
+  WHAT THIS PAGE DOES:
+    1. Hero background image with "Supercook" branding
+    2. Interactive ingredient tag creator 
+    3. Sticky navigation header
+    4. Responsive mobile-first design
+  
+  KEY FEATURES:
+    - Type ingredient → click Add → tag appears instantly
+    - Form submit OR button click both work
+    - Hover animations on Add button
+    - Flexbox for perfect centering
+  
+  LEARNING POINTS:
+    - CSS Sticky positioning
+    - Background images & hero sections
+    - JavaScript DOM manipulation (createElement)
+    - Event listeners (submit + click)
+    - Array storage (tags[])
+  ============================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- UTF-8: Supports all characters/emojis worldwide -->
     <meta charset="UTF-8">
+    <!-- Mobile responsive: Scales perfectly on phones -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supercook</title>
+    <!-- Browser tab title + SEO -->
+    <title>SuperCook - Home & Ingredient Search</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+        /* 
+         ============ CSS RESET (APPLIES TO ALL ELEMENTS) ============
+         box-sizing: border-box = padding/borders INCLUDED in width
+         margin/padding: 0 = remove browser defaults
+        */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #95ebeb;
-}
+        /* BODY: Main page styling */
+        body {
+            /* Typography: Font + line spacing */
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            /* Light cyan background */
+            background-color: #95ebeb;
+        }
 
-header {
-    background-color: #04072b;
-    color: #f7b2f3;
-    padding: 1em;
-    text-align: center;
-    border-bottom: 1px solid #444;
-    position: sticky;
-}
+        /* HEADER: Navigation - STAYS AT TOP when scrolling */
+        header {
+            /* Dark navy (#04072b) background */
+            background-color: #04072b;
+            /* Pink text */
+            color: #f7b2f3;
+            padding: 1em;
+            text-align: center;
+            border-bottom: 1px solid #444;
+            /* STICKY MAGIC: Sticks to top */
+            position: sticky;
+            top: 0;
+        }
 
 header h2{
     text-align: left;

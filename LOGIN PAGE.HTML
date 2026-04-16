@@ -1,21 +1,58 @@
+<!-- 
+  ============================================
+  LOGIN PAGE - LOGIN PAGE.HTML - BEGINNER GUIDE
+  ============================================
+  FILE PURPOSE: Modern login form with glassmorphism design
+  
+  FEATURES:
+    1. Beautiful gradient background
+    2. Glassmorphism effect (blur + transparency)
+    3. Show/hide password toggle
+    4. Form validation (email regex, password length)
+    5. Social login buttons
+    6. Smooth animations & hover effects
+  
+  LEARNING POINTS:
+    - CSS backdrop-filter (glass effect)
+    - JavaScript regex email validation
+    - Toggle classList for eye icon
+    - Form preventDefault()
+    - setTimeout for fake API delay
+  
+  DEMO LOGIN: email=demo@test.com, password=123456
+  ============================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- UTF-8 encoding for international characters -->
     <meta charset="UTF-8">
+    <!-- Responsive viewport for mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Modern Auth</title>
+    <!-- SEO friendly page title -->
+    <title>Login - SuperCook Recipe App</title>
+    <!-- Font Awesome icons (envelope, lock, google, etc.) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* 
+         =========== CSS RESET - Removes browser defaults ===========
+         Applies to ALL elements (*) on page
+        */
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Padding/border INCLUDED in width */
         }
 
+        /* BODY: Purple gradient + perfect centering */
         body {
+            /* Modern font stack (Segoe UI first, fallbacks) */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* GRADIENT BACKGROUND: Purple to dark purple */
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* Full screen height */
             min-height: 100vh;
+            /* FLEXBOX CENTER: Perfect horizontal/vertical centering */
             display: flex;
             align-items: center;
             justify-content: center;
