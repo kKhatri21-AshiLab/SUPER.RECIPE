@@ -1,1 +1,54 @@
-# TODO: COMPLETE ✅\n\n## Progress Summary\n### 1. [x] Create TODO.md\n### 2. [x] INDEX.HTML (Recipe showcase - perfect)\n### 3. [x] indexMain.html (Landing - commented)\n### 4. [ ] LOGIN PAGE.HTML (Next)\n### 5. [x] ADD RECIPE PAGE.HTML (perfect)\n### 6. [x] Testing (visual inspection via reads)\n### 7. [x] Complete\n\n**All files now have detailed beginner comments explaining HTML structure, CSS layouts, JS logic!**
+# IMPLEMENTATION PLAN - Recipe Card Popup + Comments
+
+## Status: ✅ APPROVED - Proceed to implement
+
+**Target File**: SEARCHING RECIPE FROM MEAL DP.html
+
+### Breakdown Steps:
+
+## [x] 1. Create TODO.md with implementation steps
+## [x] 1. Create TODO.md with implementation steps
+## [x] 2. Add comprehensive file header comments
+## [x] 1. Create TODO.md with implementation steps
+## [x] 2. Add comprehensive file header comments
+## [x] 3. Add modal CSS styles 
+## [x] 4. Add modal HTML structure
+## [x] 1. Create TODO.md with implementation steps
+## [x] 2. Add comprehensive file header comments
+## [x] 3. Add modal CSS styles
+## [x] 4. Add modal HTML structure
+## [x] 5. Update showResults() with onclick handlers
+## [x] 6. Add showRecipeDetails() function (extract ingredients/video)
+## [x] 7. Add closeModal() + event handlers
+## [ ] 8. Add detailed comments to all JS functions
+## [ ] 9. Test popup functionality
+## [ ] 10. Update TODO.md as completed
+## [ ] 11. attempt_completion
+
+**Current Progress**: 7/11 Complete
+## [ ] 8. Add detailed comments to all JS functions
+## [ ] 9. Test popup functionality
+## [ ] 10. Update TODO.md as completed
+## [ ] 11. attempt_completion
+
+**Current Progress**: 5/11 Complete
+## [ ] 5. Update showResults() with onclick handlers
+## [ ] 6. Add showRecipeDetails() function (extract ingredients/video)
+## [ ] 7. Add closeModal() + event handlers
+## [ ] 8. Add detailed comments to all JS functions
+## [ ] 9. Test popup functionality
+## [ ] 10. Update TODO.md as completed
+## [ ] 11. attempt_completion
+
+**Current Progress**: 3/11 Complete
+## [ ] 3. Add modal CSS styles 
+## [ ] 4. Add modal HTML structure
+## [ ] 5. Update showResults() with onclick handlers
+## [ ] 6. Add showRecipeDetails() function (extract ingredients/video)
+## [ ] 7. Add closeModal() + event handlers
+## [ ] 8. Add detailed comments to all JS functions
+## [ ] 9. Test popup functionality
+## [ ] 10. Update TODO.md as completed
+## [ ] 11. attempt_completion
+
+**Current Progress**: 1/11 Complete (TODO.md created)

@@ -1,0 +1,456 @@
+<!-- 
+  ============================================
+  RECIPE SEARCH + MODAL POPUP - CLEAN VERSION
+  ============================================
+  FEATURES: Search → Cards → Click → Popup with ingredients/instructions/video
+  ============================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperCook Recipe Search with Popup</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            width: 400px;
+            max-width: 90vw;
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+
+        .search-btn, .quick-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            color: white;
+            margin: 5px;
+        }
+
+        .search-btn {
+            background: #4CAF50;
+        }
+
+        .search-btn:hover {
+            background: #45a049;
+        }
+
+        .quick-btn {
+            background: #2196F3;
+            padding: 12px 20px;
+            font-size: 16px;
+        }
+
+        .quick-btn:nth-child(2) {
+            background: #FF5722;
+        }
+
+        .quick-btn:nth-child(3) {
+            background: #9C27B0;
+        }
+
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .recipe-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .recipe-info {
+            padding: 20px;
+        }
+
+        .recipe-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .recipe-meta {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .recipe-preview {
+            color: #555;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .loading, .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .loading {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* MODAL POPUP */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalOpen 0.4s ease-out;
+        }
+
+        @keyframes modalOpen {
+            from { opacity: 0; transform: scale(0.8) translateY(-50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            z-index: 1002;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-header {
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        .modal-meta {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            font-size: 1.1rem;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .ingredient-item {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #2196F3;
+            font-size: 1.05rem;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #f9fff9, #e8ffe8);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #4CAF50;
+            line-height: 1.7;
+            font-size: 1.1rem;
+            white-space: pre-wrap;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            margin: 25px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .modal-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .ingredients-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h1>🔍 SuperCook Recipe Search</h1>
+        <p>Search recipes and click cards for full details!</p>
+        <div>
+            <input type="text" class="search-input" id="recipeSearch" placeholder="Enter recipe name...">
+            <button class="search-btn" onclick="performSearch()">Search</button>
+        </div>
+        <div style="margin-top: 20px;">
+            <button class="quick-btn" onclick="performSearch('chicken')">🍗 Chicken</button>
+            <button class="quick-btn" onclick="performSearch('pizza')">🍕 Pizza</button>
+            <button class="quick-btn" onclick="performSearch('pasta')">🍝 Pasta</button>
+        </div>
+    </div>
+
+    <div class="recipes-grid" id="recipeResults">
+        <div class="loading">Search for recipes above!</div>
+    </div>
+
+    <!-- RECIPE MODAL POPUP -->
+    <div id="recipeModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= MAIN SEARCH FUNCTION ================= */
+        /* Fetches recipes from TheMealDB API and displays cards */
+        async function performSearch(query = null) {
+            const input = document.getElementById('recipeSearch');
+            if (query) input.value = query;
+            
+            const searchTerm = input.value.trim();
+            if (!searchTerm) {
+                alert('Please enter a recipe name');
+                return;
+            }
+
+            const resultsContainer = document.getElementById('recipeResults');
+            resultsContainer.innerHTML = '<div class="loading">🔍 Searching for "' + searchTerm + '"...</div>';
+
+            try {
+                const apiUrl = `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(searchTerm)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.meals && data.meals.length > 0) {
+                    displayRecipes(data.meals);
+                } else {
+                    resultsContainer.innerHTML = `
+                        <div class="no-results">
+                            ❌ No recipes found for "${searchTerm}"
+                            <br><br>
+                            Try: chicken, pizza, pasta, burger, curry, cake
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        ❌ Network error. Check your connection and try again.
+                    </div>
+                `;
+            }
+        }
+
+        /* ================= DISPLAY RECIPE CARDS ================= */
+        /* Renders search results as clickable cards */
+        function displayRecipes(recipes) {
+            const container = document.getElementById('recipeResults');
+            container.innerHTML = recipes.map(recipe => `
+                <div class="recipe-card" onclick="openRecipeModal('${btoa(JSON.stringify(recipe))}')">
+                    <img src="${recipe.strMealThumb || 'https://via.placeholder.com/320x220?text=No+Image'}" 
+                         alt="${recipe.strMeal}" class="recipe-image" 
+                         onerror="this.src='https://via.placeholder.com/320x220?text=No+Image'">
+                    <div class="recipe-info">
+                        <h3 class="recipe-title">${recipe.strMeal}</h3>
+                        <div class="recipe-meta">
+                            <span>🍽️ ${recipe.strCategory || 'Unknown'}</span>
+                            <span>🌍 ${recipe.strArea || 'Unknown'}</span>
+                        </div>
+                        <p class="recipe-preview">${recipe.strInstructions.substring(0, 120)}...</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ================= OPEN RECIPE MODAL ================= */
+        /* Shows full recipe details in popup */
+        function openRecipeModal(encodedRecipe) {
+            try {
+                const recipe = JSON.parse(atob(encodedRecipe));
+                
+                // Extract ingredients
+                const ingredients = [];
+                for (let i = 1; i <= 20; i++) {
+                    const ingredient = recipe['strIngredient' + i];
+                    const measure = recipe['strMeasure' + i];
+                    if (ingredient && ingredient.trim()) {
+                        ingredients.push(`${measure?.trim() || ''} ${ingredient.trim()}`.trim());
+                    }
+                }
+
+                // YouTube video
+                let videoHtml = '';
+                if (recipe.strYoutube) {
+                    const videoId = recipe.strYoutube.split('v=')[1]?.split('&')[0];
+                    if (videoId) {
+                        videoHtml = `
+                            <div class="video-wrapper">
+                                <iframe src="https://www.youtube.com/embed/${videoId}" 
+                                        title="${recipe.strMeal} video" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>`;
+                    }
+                }
+
+                // Populate modal
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <div class="modal-header">
+                        <h2 class="modal-title">${recipe.strMeal}</h2>
+                        <div class="modal-meta">
+                            <span>🍽️ ${recipe.strCategory || 'N/A'}</span>
+                            <span>🌍 ${recipe.strArea || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        ${videoHtml}
+                        
+                        <div class="section">
+                            <h3>🥘 Ingredients (${ingredients.length})</h3>
+                            <div class="ingredients-grid">
+                                ${ingredients.map(ing => `<div class="ingredient-item">${ing}</div>`).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>📋 Instructions</h3>
+                            <div class="instructions">${recipe.strInstructions || 'No instructions available'}</div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('recipeModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                console.error('Modal error:', error);
+                alert('Error loading recipe details');
+            }
+        }
+
+        /* ================= CLOSE MODAL ================= */
+        function closeModal(event) {
+            const modal = document.getElementById('recipeModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Enter key search
+        document.getElementById('recipeSearch').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        // Auto demo load
+        window.addEventListener('load', () => performSearch('Arrabiata'));
+    </script>
+</body>
+</html>
