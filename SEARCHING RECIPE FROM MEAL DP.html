@@ -341,9 +341,21 @@
                 }
             } catch (error) {
                 console.error('Search error:', error);
+                console.error('Full error details:', {
+                    message: error.message,
+                    name: error.name,
+                    stack: error.stack
+                });
+                let errorMsg = '❌ Network error. ';
+                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                    errorMsg += 'CORS/File protocol issue. Use Live Server (right-click HTML → Open with Live Server) or http://localhost server.';
+                } else {
+                    errorMsg += 'Check console (F12) and connection.';
+                }
                 resultsContainer.innerHTML = `
                     <div class="no-results">
-                        ❌ Network error. Check your connection and try again.
+                        ${errorMsg}
+                        <br><small>Details in F12 Console</small>
                     </div>
                 `;
             }
@@ -351,10 +363,18 @@
 
         /* ================= DISPLAY RECIPE CARDS ================= */
         /* Renders search results as clickable cards */
+        function safeBtoa(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
+
+        function safeAtob(str) {
+            return decodeURIComponent(escape(atob(str)));
+        }
+
         function displayRecipes(recipes) {
             const container = document.getElementById('recipeResults');
             container.innerHTML = recipes.map(recipe => `
-                <div class="recipe-card" onclick="openRecipeModal('${btoa(JSON.stringify(recipe))}')">
+                <div class="recipe-card" onclick="openRecipeModal('${safeBtoa(JSON.stringify(recipe))}')">
                     <img src="${recipe.strMealThumb || 'https://via.placeholder.com/320x220?text=No+Image'}" 
                          alt="${recipe.strMeal}" class="recipe-image" 
                          onerror="this.src='https://via.placeholder.com/320x220?text=No+Image'">
@@ -374,7 +394,8 @@
         /* Shows full recipe details in popup */
         function openRecipeModal(encodedRecipe) {
             try {
-                const recipe = JSON.parse(atob(encodedRecipe));
+                const recipe = JSON.parse(safeAtob(encodedRecipe));
+
                 
                 // Extract ingredients
                 const ingredients = [];

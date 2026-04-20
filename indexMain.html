@@ -69,27 +69,144 @@
             top: 0;
         }
 
-header h2{
-    text-align: left;
-    margin-bottom: 20px;
+/* Enhanced responsive navigation */
+header {
+    background: linear-gradient(135deg, #04072b 0%, #1a1f3d 100%);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    z-index: 1000;
 }
 
-header nav ul {
+header > nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f7b2f3;
+    text-decoration: none;
+}
+
+.nav-search {
+    flex: 0 1 300px;
+    max-width: 300px;
+    margin-left: 1rem;
+    position: relative;
+}
+
+.nav-search input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.5rem;
+    border: 2px solid rgba(247,178,243,0.3);
+    border-radius: 25px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.nav-search input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.nav-search input:focus {
+    outline: none;
+    border-color: #f7b2f3;
+    box-shadow: 0 0 0 3px rgba(247,178,243,0.2);
+}
+
+.nav-menu {
+    display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: space-between;
-    text-size-adjust: 20px;
+    gap: 0.5rem;
 }
 
-header nav li {
-    margin-right: 20px;
-}
-
-header nav a {
+.nav-menu li a {
+    display: block;
+    padding: 0.8rem 1.2rem;
     color: #fff;
     text-decoration: none;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-menu li a:hover,
+.nav-menu li a.active {
+    background: rgba(247,178,243,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(247,178,243,0.3);
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+    padding: 0.5rem;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: #f7b2f3;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #04072b;
+        flex-direction: column;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    .nav-menu.active {
+        max-height: 500px;
+        padding: 1rem 0;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .nav-search {
+        flex: 0 1 200px;
+        max-width: 400px;
+        margin-left: 0.5rem;
+    }
+    
+    header > nav {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.5rem;
+    }
+    
+    .nav-search {
+        flex: 0 1 180px;
+        max-width: 180px;
+        margin-left: 0.5rem;
+    }
 }
 
 main {
@@ -167,20 +284,30 @@ footer {
    
 </head>
 <body>
-    <header>
-        <nav>
-            <h2>Welcome Super Cook Book</h2>
-            <ul>
-<li><a href="./mainHTML/indexMain2.html">Recipes</a></li>
-                <li><a href="#">Cookbooks</a></li>
-                <li><a href="#">Meal Planner</a></li>
-                <li><a href="#">add Grocery List</a></li>
-                <li><a href="#">pdf's</a></li>
-                <li><a href="#">posts</a></li>
-                <li><a href="#">feeds </a></li>
-                <li><a href="./mainHTML/addRecipe.html">Add Recipe</a></li>
-
+<header>
+        <nav role="navigation" aria-label="Main navigation">
+            <a href="indexMain.html" class="logo" aria-label="Super Cook Book Home">🍳 SuperCook</a>
+            <div class="nav-search">
+                <input type="text" placeholder="Search recipes..." id="nav-search">
+                <button onclick="performNavSearch()" aria-label="Search">🔍</button>
+            </div>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="./SEARCHING RECIPE FROM MEAL DP.html" aria-label="Browse Recipes">Recipes</a></li>
+                <li><a href="./INDEX.HTML" aria-label="View Cookbooks">Cookbooks</a></li>
+                <li><a href="#" aria-label="Meal Planner">Meal Planner</a></li>
+                <li><a href="#" aria-label="Grocery List">Grocery List</a></li>
+                <li><a href="#" aria-label="PDF Resources">PDFs</a></li>
+                <li><a href="#" aria-label="Community Posts">Posts</a></li>
+                <li><a href="#" aria-label="Feeds">Feeds</a></li>
+                <li><a href="./ADD RECIPE PAGE.HTML" aria-label="Add New Recipe">Add Recipe</a></li>
             </ul>
+            
+            <div class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu" role="button" tabindex="0">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </nav>
     </header>
     <main>
@@ -201,6 +328,43 @@ footer {
     </footer>
 
     <script>
+function toggleMenu() {
+    const menu = document.getElementById('nav-menu');
+    const hamburger = document.getElementById('hamburger');
+    menu.classList.toggle('active');
+    hamburger.classList.toggle('active');
+    
+    // Animate hamburger lines
+    const lines = hamburger.querySelectorAll('span');
+    lines[0].style.transform = menu.classList.contains('active') ? 'rotate(45deg) translate(5px, 5px)' : 'none';
+    lines[1].style.opacity = menu.classList.contains('active') ? '0' : '1';
+    lines[2].style.transform = menu.classList.contains('active') ? 'rotate(-45deg) translate(7px, -6px)' : 'none';
+}
+
+function performNavSearch() {
+    const input = document.getElementById('nav-search');
+    if (input.value.trim()) {
+        alert(`Searching for: ${input.value}`); // TODO: Integrate with search
+        input.value = '';
+    }
+}
+
+// Close menu on window resize (back to desktop)
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+        document.getElementById('nav-menu').classList.remove('active');
+        document.getElementById('hamburger').classList.remove('active');
+    }
+});
+
+// Keyboard support
+document.getElementById('hamburger').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMenu();
+    }
+});
+
 const searchForm = document.getElementById('search-form');
 const searchInput = document.getElementById('search-input');
 const addButton = document.getElementById('add-button');
