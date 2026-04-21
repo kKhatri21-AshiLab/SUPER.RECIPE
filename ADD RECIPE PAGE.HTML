@@ -558,6 +558,285 @@
             }
         }
     </style>
+    <script>
+
+
+// 
+class RecipeFormManager {
+    constructor() {
+        this.form = document.getElementById('recipeForm');
+        this.successMessage = document.getElementById('successMessage');
+        this.errorNotification = document.getElementById('errorNotification');
+        this.submitBtn = document.getElementById('submitBtn');
+        this.redirectDelay = 1500;
+        
+        // MONGODB CONNECTION (Replace with your connection string)
+        this.mongoUri = 'mongodb://localhost:27017/recipes'; // Local MongoDB
+        // OR use MongoDB Atlas: 'mongodb+srv://username:password@cluster.mongodb.net/recipes'
+        
+        this.init();
+    }
+
+    async init() {
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        this.setupFieldValidation();
+        this.setupTimeButtons();
+        this.setupDifficultyButtons();
+        
+        // Test MongoDB connection on page load
+        await this.testMongoConnection();
+    }
+
+    // ========== MONGODB FUNCTIONS ==========
+    
+    /**
+     * Test MongoDB connection
+     */
+    async testMongoConnection() {
+        try {
+            const client = new MongoClient(this.mongoUri);
+            await client.connect();
+            console.log('✅ MongoDB Connected!');
+            await client.close();
+        } catch (error) {
+            console.error('❌ MongoDB Connection Failed:', error);
+            this.showError('Database connection failed. Using local storage as backup.');
+        }
+    }
+
+    /**
+     * Save recipe to MongoDB (PRIMARY METHOD)
+     */
+    async saveRecipeToMongo(recipe) {
+        try {
+            const client = new MongoClient(this.mongoUri);
+            await client.connect();
+            const db = client.db('recipes');
+            const result = await db.collection('recipes').insertOne(recipe);
+            
+            console.log('✅ Recipe saved to MongoDB:', result.insertedId);
+            await client.close();
+            return result.insertedId;
+        } catch (error) {
+            console.error('MongoDB Error:', error);
+            throw new Error('Failed to save to database');
+        }
+    }
+
+    /**
+     * Get all recipes from MongoDB
+     */
+    async getRecipesFromMongo() {
+        try {
+            const client = new MongoClient(this.mongoUri);
+            await client.connect();
+            const db = client.db('recipes');
+            const recipes = await db.collection('recipes').find({}).toArray();
+            await client.close();
+            return recipes;
+        } catch (error) {
+            console.error('MongoDB fetch error:', error);
+            return [];
+        }
+    }
+
+    // ========== ORIGINAL FUNCTIONS (unchanged) ==========
+    setupFieldValidation() {
+        const requiredFields = this.form.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            field.addEventListener('blur', () => this.validateField(field));
+            field.addEventListener('change', () => this.validateField(field));
+        });
+    }
+
+    setupTimeButtons() {
+        const timeButtons = document.querySelectorAll('.time-btn');
+        const customInput = document.getElementById('totalTime');
+        timeButtons.forEach(button => {
+            button.addEventListener('click', () => this.handleTimeButtonClick(button, timeButtons, customInput));
+        });
+    }
+
+    handleTimeButtonClick(clickedButton, allButtons, customInput) {
+        allButtons.forEach(btn => btn.classList.remove('active'));
+        clickedButton.classList.add('active');
+        
+        if (clickedButton.id === 'customTimeBtn') {
+            customInput.style.display = 'block';
+            customInput.focus();
+            customInput.value = '';
+        } else {
+            customInput.style.display = 'none';
+            customInput.value = clickedButton.dataset.time;
+        }
+        this.validateField(customInput);
+    }
+
+    setupDifficultyButtons() {
+        const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+        const difficultyInput = document.getElementById('difficulty');
+        difficultyButtons.forEach(button => {
+            button.addEventListener('click', () => this.handleDifficultyButtonClick(button, difficultyButtons, difficultyInput));
+        });
+    }
+
+    handleDifficultyButtonClick(clickedButton, allButtons, difficultyInput) {
+        allButtons.forEach(btn => btn.classList.remove('active'));
+        clickedButton.classList.add('active');
+        difficultyInput.value = clickedButton.dataset.difficulty;
+        this.validateField(difficultyInput);
+    }
+
+    validateField(field) {
+        let isValid = false;
+        
+        if (field.id === 'totalTime') {
+            const activeButton = document.querySelector('.time-btn.active');
+            if (activeButton && activeButton.id !== 'customTimeBtn') {
+                isValid = true;
+            } else if (activeButton && activeButton.id === 'customTimeBtn') {
+                isValid = field.checkValidity() && field.value.trim().length > 0;
+            }
+        } else if (field.id === 'difficulty') {
+            isValid = field.value.trim().length > 0;
+        } else {
+            isValid = field.checkValidity();
+        }
+
+        const formGroup = field.closest('.form-group');
+        if (formGroup) {
+            if (isValid) {
+                formGroup.classList.remove('error');
+            } else {
+                formGroup.classList.add('error');
+            }
+        }
+        return isValid;
+    }
+
+    async handleSubmit(event) {
+        event.preventDefault();
+        
+        if (!this.validateForm()) {
+            this.showError('Please fill in all required fields correctly.');
+            return;
+        }
+
+        try {
+            this.submitBtn.disabled = true;
+            this.submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            // BUILD MONGODB COMPATIBLE RECIPE (matches schema from previous explanation)
+            const newRecipe = this.buildMongoRecipeObject();
+            
+            // TRY MONGODB FIRST, FALLBACK TO LOCALSTORAGE
+            try {
+                await this.saveRecipeToMongo(newRecipe);
+            } catch (dbError) {
+                console.warn('MongoDB failed, using localStorage backup');
+                this.saveRecipeLocal(newRecipe); // Fallback
+            }
+            
+            this.showSuccessMessage();
+            setTimeout(() => {
+                window.location.href = 'INDEX.HTML';
+            }, this.redirectDelay);
+        } catch (error) {
+            console.error('Error saving recipe:', error);
+            this.showError('Failed to save recipe. Please try again.');
+            this.submitBtn.disabled = false;
+            this.submitBtn.innerHTML = '<i class="fas fa-save"></i> <span>Save Recipe</span>';
+        }
+    }
+
+    // ========== MONGODB-SPECIFIC RECIPE BUILDER ==========
+    buildMongoRecipeObject() {
+        const stepDescriptions = this.parseLines(document.getElementById('instructions').value);
+        const stepImages = this.parseLines(document.getElementById('stepImages').value, true);
+        const stepVideos = this.parseLines(document.getElementById('stepVideos').value, true);
+
+        // EXACTLY MATCHES MONGODB SCHEMA FROM PREVIOUS EXPLANATION
+        return {
+            title: this.getFieldValue('title'),
+            slug: this.generateSlug(this.getFieldValue('title')),
+            description: this.getFieldValue('description'),
+            prepTime: this.parseTime(this.getFieldValue('totalTime')),
+            cookTime: this.parseTime(this.getFieldValue('totalTime')),
+            servings: 4, // Default
+            difficulty: document.getElementById('difficulty').value.toLowerCase(),
+            ingredients: this.parseLines(document.getElementById('ingredients').value),
+            instructions: stepDescriptions.map((desc, i) => ({
+                description: desc,
+                image: stepImages[i] || '',
+                video: stepVideos[i] || ''
+            })),
+            categories: ['dinner', 'lunch'], // Default - make dynamic later
+            tags: this.parseCommaList(document.getElementById('tags').value),
+            nutrition: { calories: 450, protein: 25, carbs: 40 }, // Default
+            images: [this.getFieldValue('image')].filter(Boolean),
+            author: 'User', // Get from login later
+            ratings: { avg: 0, count: 0 },
+            createdAt: new Date().toISOString()
+        };
+    }
+
+    // ========== HELPER FUNCTIONS ==========
+    generateSlug(title) {
+        return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    parseTime(timeStr) {
+        const num = parseInt(timeStr.match(/\d+/)?.[0] || '30');
+        return num;
+    }
+
+    validateForm() {
+        const requiredFields = this.form.querySelectorAll('[required]');
+        let isValid = true;
+        requiredFields.forEach(field => {
+            if (!this.validateField(field)) isValid = false;
+        });
+        return isValid;
+    }
+
+    getFieldValue(fieldId) { return document.getElementById(fieldId).value.trim(); }
+    parseCommaList(value) {
+        return value.split(',').map(item => item.trim()).filter(item => item.length > 0);
+    }
+    parseLines(value, allowEmpty = false) {
+        const lines = value.split('\n').map(line => line.trim());
+        return allowEmpty ? lines : lines.filter(line => line.length > 0);
+    }
+
+    // LocalStorage fallback
+    saveRecipeLocal(recipe) {
+        const recipes = JSON.parse(localStorage.getItem('userRecipes') || '[]');
+        recipes.push(recipe);
+        localStorage.setItem('userRecipes', JSON.stringify(recipes));
+    }
+
+    showSuccessMessage() {
+        this.errorNotification.style.display = 'none';
+        this.successMessage.style.display = 'block';
+        this.successMessage.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    showError(message) {
+        this.successMessage.style.display = 'none';
+        this.errorNotification.textContent = message;
+        this.errorNotification.style.display = 'block';
+        this.errorNotification.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// CDN MongoDB Client (No npm install needed!)
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/mongodb@6.3.0/client-umd/index.js';
+script.onload = () => {
+    document.addEventListener('DOMContentLoaded', () => new RecipeFormManager());
+};
+document.head.appendChild(script);
+</script>
 </head>
 <body>
     <!-- SUPER.RECIPE NAVIGATION - Fixed top-right across all pages -->

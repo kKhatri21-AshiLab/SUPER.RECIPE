@@ -1,18 +1,24 @@
-# Fix YouTube Error 153 - Video Player Configuration Error
+# MongoDB Backend Implementation Plan
 
-## Current Status: 🚀 Implementation Started
+## Status: Progress
 
-### Approved Plan Steps:
-- [✅] Step 1: Add robust `getYouTubeVideoId()` parser function to indexMain.html
-- [✅] Step 2: Replace broken `split('v=')[1]` with safe regex parsing + error handling iframe
-- [✅] Step 3: Test in browser - Code fix COMPLETE (Error 153 eliminated). file:// restriction fixed via instructions below
-- [ ] Step 4: Audit/fix other files if needed (INDEX.HTML, SEARCHING RECIPE FROM MEAL DP.html)
-- [ ] Step 5: Run local server (`npx live-server`) for proper http:// testing
-- [ ] Step 6: Update TODO.md ✅ & attempt_completion
+1. [x] Confirm plan with user
+2. [x] Create .env with MONGODB_URI
+3. [x] Implement CRUD routes in BACKEND/backend/routes/recipes.js
+4. [ ] cd BACKEND/backend && npm install
+5. [ ] npm run dev
+6. [ ] Test with Postman
+7. [ ] Integrate frontend
 
-**Root Cause Fixed**: Malformed TheMealDB `strYoutube` URLs now parsed safely with regex + fallbacks.
+## Analysis
+- MongoDB fully implemented: connection, model, full CRUD routes.
+- Routes aligned with ADD RECIPE PAGE.HTML fields (title, description, totalTime, ingredients[], instructions[] with step images/videos, tags, etc.).
+- POST /api/recipes handles form data, generates slug, parses time, defaults missing fields.
+- Server ready to run.
 
-**Testing Commands**:
-```
-# Refresh browser F5, test chicken/pizza recipes
-# Or: npx live-server . --open
+## Next Steps
+1. Ensure MongoDB running locally (or use Atlas).
+2. Run: cd BACKEND/backend && npm install && npm run dev
+3. Test API with Postman (postman/ folder exists).
+4. Update frontend JS: replace browser MongoClient with fetch('/api/recipes').
+
