@@ -1,24 +1,14 @@
-# MongoDB Backend Implementation Plan
+# SUPER.RECIPE Interactive Recipe Showcase Task
 
-## Status: Progress
+**✅ PLAN APPROVED BY USER**
 
-1. [x] Confirm plan with user
-2. [x] Create .env with MONGODB_URI
-3. [x] Implement CRUD routes in BACKEND/backend/routes/recipes.js
-4. [ ] cd BACKEND/backend && npm install
-5. [ ] npm run dev
-6. [ ] Test with Postman
-7. [ ] Integrate frontend
-
-## Analysis
-- MongoDB fully implemented: connection, model, full CRUD routes.
-- Routes aligned with ADD RECIPE PAGE.HTML fields (title, description, totalTime, ingredients[], instructions[] with step images/videos, tags, etc.).
-- POST /api/recipes handles form data, generates slug, parses time, defaults missing fields.
-- Server ready to run.
-
-## Next Steps
-1. Ensure MongoDB running locally (or use Atlas).
-2. Run: cd BACKEND/backend && npm install && npm run dev
-3. Test API with Postman (postman/ folder exists).
-4. Update frontend JS: replace browser MongoClient with fetch('/api/recipes').
+### Breakdown & Steps:
+1. **🔄 IN PROGRESS: Backup original INDEX.HTML** - Rename to INDEX.HTML.backup
+2. **TODO: Create new INDEX.HTML** - Full rewrite with recipe grid, modals, animations, login btn
+3. **TODO: Test responsive design** - Check mobile/tablet/desktop grid, hover/modals
+4. **TODO: Verify modal JS** - Open/close, populate details from data attrs
+5. **TODO: Test animations** - Card entrance, hover effects
+6. **TODO: Link login button** - Confirm href to 'LOGIN PAGE.HTML'
+7. **TODO: Use project assets** - Sample recipes/images from DATASET
+8. **TODO: COMPLETE: attempt_completion**
 
