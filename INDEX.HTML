@@ -177,6 +177,10 @@
             
             try {
                 const response = await fetch('DATASET/Food Ingredients and Recipe Dataset with Image Name Mapping.csv');
+                // Check if CSV loaded - logs to console for debugging
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} - CSV file not found or inaccessible.`);
+                }
                 const csvText = await response.text();
                 const recipes = Papa.parse(csvText, {header: true, skipEmptyLines: true}).data.slice(0, 50); // First 50 recipes
                 
