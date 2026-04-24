@@ -14,6 +14,7 @@ const express = require('express');     // Web server framework
 const mongoose = require('mongoose');   // MongoDB ORM (Object Relational Mapper)
 const cors = require('cors');           // Enable frontend-backend communication
 const dotenv = require('dotenv');       // Load .env variables securely
+const path = require('path');           // Helps build correct file paths across operating systems
 
 // Load environment variables from .env file (MONGODB_URI, PORT)
 dotenv.config();
@@ -23,6 +24,20 @@ const recipeRoutes = require('./routes/recipes.js');  // CRUD routes for recipes
 
 // Initialize Express app
 const app = express();
+
+// =========================================
+// SERVE STATIC FILES (HTML, CSS, Images, CSV Dataset)
+// =========================================
+// WHAT: This tells Express to serve files from the project root folder.
+// WHY:  When you open INDEX.HTML directly (double-click), the browser uses
+//       the file:// protocol. Browsers BLOCK fetch() requests to local files
+//       for security (CORS policy). By serving files through this server,
+//       you access them via http://localhost:5000/ which allows fetch() to work.
+// HOW:  path.join(__dirname, '../../') goes UP two folders from BACKEND/backend/
+//       to reach the project root (where INDEX.HTML and DATASET/ live).
+// USAGE: Start server (npm run dev), then open http://localhost:5000/INDEX.HTML
+// =========================================
+app.use(express.static(path.join(__dirname, '../../')));
 
 // ================= MIDDLEWARE SETUP =================
 // Middleware processes incoming requests BEFORE they reach routes

@@ -171,28 +171,56 @@
     </div>
 
     <script>
-        // Load recipes from CSV
+        // =========================================
+        // LOAD RECIPES FROM CSV DATASET
+        // =========================================
+        // WHAT: Fetches the local CSV file and converts it into recipe cards.
+        // WHY:  The dataset contains ~58,000 real recipes with images.
+        // NOTE: This ONLY works when the page is served through a web server
+        //       (http://localhost:5000/INDEX.HTML). Opening the file directly
+        //       (file://) will FAIL because browsers block fetch() for security.
+        // =========================================
         async function loadRecipes() {
             const grid = document.getElementById('recipe-grid');
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #666;"><i class="fas fa-spinner fa-spin fa-3x" style="margin-bottom: 1rem;"></i><p>Loading recipes from dataset...</p></div>';
             
             try {
-                const response = await fetch('DATASET/Food Ingredients and Recipe Dataset with Image Name Mapping.csv');
-                // Check if CSV loaded - logs to console for debugging
+                // STEP 1: Build the CSV file path
+                // encodeURI() converts spaces → %20 so the browser can fetch it correctly
+                const csvPath = encodeURI('DATASET/Food Ingredients and Recipe Dataset with Image Name Mapping.csv');
+                
+                // STEP 2: Fetch the CSV file from the server
+                const response = await fetch(csvPath);
+                
+                // STEP 3: Check if the file was found (200 = success)
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status} - CSV file not found or inaccessible.`);
                 }
-                const csvText = await response.text();
-                const recipes = Papa.parse(csvText, {header: true, skipEmptyLines: true}).data.slice(0, 50); // First 50 recipes
                 
+                // STEP 4: Convert response to plain text, then parse with PapaParse
+                const csvText = await response.text();
+                
+                // Papa.parse() turns CSV text into a JavaScript array of objects
+                // header: true  → uses first row as property names (Title, Ingredients, etc.)
+                // skipEmptyLines: true → ignores blank rows
+                // .slice(0, 50) → only show first 50 recipes for performance
+                const recipes = Papa.parse(csvText, {header: true, skipEmptyLines: true}).data.slice(0, 50);
+                
+                // STEP 5: Clear loading spinner and build recipe cards
                 grid.innerHTML = '';
                 recipes.forEach((r, index) => {
+                    // Skip rows that are missing a title or image name
                     if (!r.Title || !r.Image_Name) return;
-                    const imgPath = `DATASET/Food Images/Food Images/${r.Image_Name}.jpg`;
+                    
+                    // Encode image path so spaces in folder names don't break the image
+                    const imgPath = encodeURI(`DATASET/Food Images/Food Images/${r.Image_Name}.jpg`);
+                    
+                    // Build description from instructions (first 100 chars + ...)
                     const desc = r.Instructions ? r.Instructions.slice(0, 100) + '...' : 'Delicious recipe!';
                     const fullIng = r.Ingredients || 'Ingredients not available';
                     const fullIns = r.Instructions || 'Instructions not available';
                     
+                    // Create the card HTML element
                     const card = document.createElement('div');
                     card.className = 'recipe-card';
                     card.dataset.title = r.Title;
@@ -200,9 +228,13 @@
                     card.dataset.desc = desc;
                     card.dataset.fullIng = fullIng;
                     card.dataset.fullIns = fullIns;
-                    card.style.animationDelay = `${0.1 * index}s`;
+                    card.style.animationDelay = `${0.1 * index}s`; // staggered animation
+                    
+                    // Fallback image if the recipe image is missing
+                    const fallbackImg = encodeURI('DATASET/Food Images/Food Images/3-ingredient-caramel-apple-tart.jpg');
+                    
                     card.innerHTML = `
-                        <img class="card-img" src="${imgPath}" alt="${r.Title}" loading="lazy" onerror="this.src='DATASET/Food Images/Food Images/3-ingredient-caramel-apple-tart.jpg';">
+                        <img class="card-img" src="${imgPath}" alt="${r.Title}" loading="lazy" onerror="this.src='${fallbackImg}';">
                         <div class="card-content">
                             <h3 class="card-title">${r.Title}</h3>
                             <p class="card-desc">${desc}</p>
@@ -212,12 +244,86 @@
                     grid.appendChild(card);
                 });
                 
-                // Re-attach event listeners
+                // STEP 6: Attach click events so cards open the modal
                 attachModalListeners();
                 
             } catch (error) {
+                // =========================================
+                // ERROR HANDLING + FALLBACK RECIPES
+                // =========================================
+                // If fetching fails (e.g. opened file directly, server not running),
+                // show a helpful message AND display sample recipes so the page isn't empty.
+                // =========================================
                 console.error('Error loading recipes:', error);
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #e74c3c;"><i class="fas fa-exclamation-triangle fa-3x" style="margin-bottom: 1rem;"></i><p>Error loading recipes. Showing samples.</p></div>';
+                
+                const fallbackRecipes = [
+                    {
+                        title: 'Miso-Butter Roast Chicken With Acorn Squash Panzanella',
+                        img: encodeURI('DATASET/Food Images/Food Images/miso-butter-roast-chicken-acorn-squash-panzanella.jpg'),
+                        desc: 'Pat chicken dry with paper towels, season all over with salt, and tie legs together...',
+                        ing: "['1 (3½–4-lb.) whole chicken', '2¾ tsp. kosher salt', '2 small acorn squash', '6 Tbsp. unsalted butter']",
+                        ins: 'Pat chicken dry, season, roast at 425°F for 50–60 minutes. Serve with panzanella.'
+                    },
+                    {
+                        title: 'Crispy Salt and Pepper Potatoes',
+                        img: encodeURI('DATASET/Food Images/Food Images/crispy-salt-and-pepper-potatoes-dan-kluger.jpg'),
+                        desc: 'Preheat oven to 400°F and line a rimmed baking sheet with parchment...',
+                        ing: "['2 large egg whites', '1 pound new potatoes', '2 teaspoons kosher salt']",
+                        ins: 'Whisk egg whites until foamy, toss potatoes, season and roast 15–20 minutes.'
+                    },
+                    {
+                        title: 'Thanksgiving Mac and Cheese',
+                        img: encodeURI('DATASET/Food Images/Food Images/thanksgiving-mac-and-cheese-erick-williams.jpg'),
+                        desc: 'Place a rack in middle of oven; preheat to 400°. Bring milks to a bare simmer...',
+                        ing: "['1 cup evaporated milk', '2 lb. extra-sharp cheddar', '1 lb. elbow macaroni']",
+                        ins: 'Simmer milk, whisk in cheese, cook macaroni, combine and bake until melted.'
+                    },
+                    {
+                        title: 'Italian Sausage and Bread Stuffing',
+                        img: encodeURI('DATASET/Food Images/Food Images/italian-sausage-and-bread-stuffing-240559.jpg'),
+                        desc: 'Preheat oven to 350°F with rack in middle. Generously butter baking dish...',
+                        ing: "['1 round Italian loaf', '2 pounds sweet Italian sausage', '1 stick unsalted butter']",
+                        ins: 'Toast bread, brown sausage, sauté vegetables, mix with eggs and cream, bake.'
+                    }
+                ];
+                
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #e74c3c; background: #fdf2f2; border-radius: 15px; margin-bottom: 2rem;">
+                        <i class="fas fa-exclamation-triangle fa-2x" style="margin-bottom: 1rem;"></i>
+                        <p><strong>Could not load the full dataset.</strong></p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                            Make sure you started the backend server:<br>
+                            <code style="background:#eee;padding:2px 6px;border-radius:4px;">cd BACKEND/backend && npm run dev</code><br>
+                            Then visit <code style="background:#eee;padding:2px 6px;border-radius:4px;">http://localhost:5000/INDEX.HTML</code>
+                        </p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #666;">
+                            (Opening the HTML file directly with double-click will NOT work because of browser security.)
+                        </p>
+                    </div>
+                `;
+                
+                // Render fallback recipe cards so the page isn't empty
+                fallbackRecipes.forEach((r, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'recipe-card';
+                    card.dataset.title = r.title;
+                    card.dataset.img = r.img;
+                    card.dataset.desc = r.desc;
+                    card.dataset.fullIng = r.ing;
+                    card.dataset.fullIns = r.ins;
+                    card.style.animationDelay = `${0.1 * index}s`;
+                    card.innerHTML = `
+                        <img class="card-img" src="${r.img}" alt="${r.title}" loading="lazy" onerror="this.src='${encodeURI('DATASET/Food Images/Food Images/3-ingredient-caramel-apple-tart.jpg')}';">
+                        <div class="card-content">
+                            <h3 class="card-title">${r.title}</h3>
+                            <p class="card-desc">${r.desc}</p>
+                            <i class="fas fa-fire card-icon"></i>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                
+                attachModalListeners();
             }
         }
 
