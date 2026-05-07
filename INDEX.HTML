@@ -1,17 +1,31 @@
 <!DOCTYPE html>
+<!-- 
+    ============================================
+    SUPER.RECIPE - RECIPE SHOWCASE PAGE
+    ============================================
+    INTEGRATED WITH MONGODB & JSON DATABASE
+    
+    Features:
+    - Fetches recipes from Backend API (MongoDB + JSON)
+    - Connected to all pages via navigation
+    - Full recipe details in modal popup
+    - Responsive grid layout with animations
+    - Search and filter capabilities
+    ============================================
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SUPER.RECIPE - Interactive Recipe Showcase</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles/shared-nav.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
 
     <style>
-        
-        /* Reset and Base Styles */
+        /* ================================================
+           GLOBAL STYLES & RESET
+           ================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -20,7 +34,9 @@
             overflow-x: hidden;
         }
 
-        /* Navigation - Matching project style */
+        /* ================================================
+           NAVIGATION BAR
+           ================================================ */
         .nav {
             position: fixed; top: 20px; right: 20px; z-index: 1000;
         }
@@ -35,11 +51,17 @@
         .nav-btn { 
             padding: 0.5em 1.5em; color: #fff; cursor: pointer; transition: 0.3s; 
             border-radius: 10px; font-weight: 500; white-space: nowrap; background: none; border: none;
+            text-decoration: none;
         }
         .nav-btn:hover { background: #e4ae0b; color: #000; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(228,174,11,0.4); }
-        @media (max-width: 768px) { .nav-container { width: clamp(350px,75vw,450px); height: 50px; padding: 0.3em; } .nav-btn { padding: 0.4em 0.8em; font-size: 0.85rem; } }
+        @media (max-width: 768px) { 
+            .nav-container { width: clamp(350px,75vw,450px); height: 50px; padding: 0.3em; } 
+            .nav-btn { padding: 0.4em 0.8em; font-size: 0.85rem; } 
+        }
 
-        /* Hero Section */
+        /* ================================================
+           HERO SECTION
+           ================================================ */
         .hero { 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); 
             height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -54,7 +76,9 @@
         }
         .login-btn:hover { background: rgba(255,255,255,0.3); border-color: white; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-        /* Recipe Grid */
+        /* ================================================
+           RECIPE CARDS SECTION
+           ================================================ */
         .recipes-section { padding: 80px 20px; max-width: 1400px; margin: 0 auto; }
         .section-title { text-align: center; font-size: 3rem; margin-bottom: 4rem; color: #333; }
         #recipe-grid { 
@@ -72,20 +96,16 @@
         .recipe-card:nth-child(4) { animation-delay: 0.4s; }
         .recipe-card:nth-child(5) { animation-delay: 0.5s; }
         .recipe-card:nth-child(6) { animation-delay: 0.6s; }
-        .recipe-card:nth-child(7) { animation-delay: 0.7s; }
-        .recipe-card:nth-child(8) { animation-delay: 0.8s; }
-        .recipe-card:nth-child(9) { animation-delay: 0.9s; }
-        .recipe-card:nth-child(10) { animation-delay: 1s; }
-        .recipe-card:nth-child(11) { animation-delay: 1.1s; }
-        .recipe-card:nth-child(12) { animation-delay: 1.2s; }
         .recipe-card:hover { transform: translateY(-15px) scale(1.02); box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
         .card-img { height: 250px; object-fit: cover; width: 100%; }
         .card-content { padding: 1.5rem; }
         .card-title { font-size: 1.5rem; margin-bottom: 0.5rem; color: #333; }
-        .card-desc { color: #666; margin-bottom: 1rem; }
+        .card-desc { color: #666; margin-bottom: 1rem; font-size: 0.95rem; }
         .card-icon { color: #e4ae0b; }
 
-        /* Modal */
+        /* ================================================
+           MODAL (POPUP)
+           ================================================ */
         #recipe-modal { 
             display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); animation: fadeIn 0.3s;
@@ -96,64 +116,68 @@
             border-radius: 20px; padding: 2.5rem; overflow-y: auto; animation: modalSlideIn 0.3s;
             line-height: 1.6; font-size: 1.05rem;
         }
-
         .close { color: #aaa; float: right; font-size: 2rem; font-weight: bold; cursor: pointer; }
         .close:hover { color: #333; }
-        .modal-img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem; }
-        .modal-title { font-size: 1.8rem; margin-bottom: 1rem; }
+        .modal-img { width: 100%; height: 250px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem; }
+        .modal-title { font-size: 1.8rem; margin-bottom: 1rem; color: #333; }
         .modal-section { margin-bottom: 1.5rem; }
-        .modal-section h3 { color: #e4ae0b; margin-bottom: 0.5rem; }
+        .modal-section h3 { color: #e4ae0b; margin-bottom: 0.8rem; }
+        .modal-section ul { margin-left: 1.5rem; }
+        .modal-section li { margin-bottom: 0.5rem; }
 
-        /* Animations */
+        /* ================================================
+           ANIMATIONS
+           ================================================ */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes modalSlideIn { from { opacity: 0; transform: translate(-50%, -60%); } to { opacity: 1; transform: translate(-50%, -50%); } }
 
-        /* Responsive */
+        /* ================================================
+           RESPONSIVE
+           ================================================ */
         @media (max-width: 768px) { 
             .recipes-section { padding: 60px 10px; } 
             .section-title { font-size: 2.5rem; } 
             #recipe-grid { grid-template-columns: 1fr; gap: 1.5rem; }
             .hero { padding: 0 10px; height: 80vh; }
+            .modal-content { width: 95%; padding: 1.5rem; }
         }
-        @media (min-width: 769px) and (max-width: 1024px) { #recipe-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- NAVIGATION BAR -->
     <nav class="nav">
         <div class="nav-container">
-            <button class="nav-btn" onclick="location.href='indexMain.html'"><i class="fas fa-home"></i> Home</button>
-            <a href="LOGIN PAGE.HTML" class="nav-btn login-nav"><i class="fas fa-user"></i> Login</a>
-            <button class="nav-btn" onclick="location.href='ADD RECIPE PAGE.HTML'"><i class="fas fa-plus"></i> Add Recipe</button>
-            <button class="nav-btn active" onclick="location.href='INDEX.HTML'"><i class="fas fa-list"></i> Recipes</button>
-            <button class="nav-btn" onclick="location.href='SEARCHING RECIPE FROM MEAL DP.html'"><i class="fas fa-search"></i> Search</button>
+            <a href="indexMain.html" class="nav-btn" title="Home"><i class="fas fa-home"></i> Home</a>
+            <a href="LOGIN PAGE.HTML" class="nav-btn" title="Login"><i class="fas fa-user"></i> Login</a>
+            <a href="ADD RECIPE PAGE.HTML" class="nav-btn" title="Add Recipe"><i class="fas fa-plus"></i> Add Recipe</a>
+            <a href="INDEX.HTML" class="nav-btn active" title="All Recipes"><i class="fas fa-list"></i> Recipes</a>
+            <a href="SEARCHING RECIPE FROM MEAL DP.html" class="nav-btn" title="Search"><i class="fas fa-search"></i> Search</a>
         </div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 60" height="60" width="400" class="outline">
             <rect stroke-width="5" fill="transparent" height="60" width="650" y="0" x="0" pathLength="100" class="rect"></rect>
         </svg>
     </nav>
 
-    <!-- Hero -->
+    <!-- HERO SECTION -->
     <section class="hero">
         <h1>Discover Delicious Recipes</h1>
-        <p>Interactive showcase of mouthwatering dishes</p>
+        <p>🍳 From MongoDB Database & JSON Files 📚</p>
         <a href="LOGIN PAGE.HTML" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login to Save Favorites</a>
     </section>
 
-    <!-- Recipes Section -->
+    <!-- RECIPES SECTION -->
     <section class="recipes-section">
         <h2 class="section-title"><i class="fas fa-utensils"></i> Featured Recipes</h2>
         <div id="recipe-grid">
             <div class="loading" style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #666;">
                 <i class="fas fa-spinner fa-spin fa-3x" style="margin-bottom: 1rem;"></i>
-                <p>Loading recipes from dataset...</p>
+                <p>Loading recipes from database...</p>
             </div>
         </div>
-
     </section>
 
-    <!-- Modal -->
+    <!-- RECIPE DETAILS MODAL -->
     <div id="recipe-modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -161,7 +185,7 @@
             <h2 id="modal-title"></h2>
             <div class="modal-section">
                 <h3><i class="fas fa-list"></i> Ingredients</h3>
-                <p id="modal-ing"></p>
+                <div id="modal-ing"></div>
             </div>
             <div class="modal-section">
                 <h3><i class="fas fa-utensils"></i> Instructions</h3>
@@ -171,162 +195,110 @@
     </div>
 
     <script>
-        // =========================================
-        // LOAD RECIPES FROM CSV DATASET
-        // =========================================
-        // WHAT: Fetches the local CSV file and converts it into recipe cards.
-        // WHY:  The dataset contains ~58,000 real recipes with images.
-        // NOTE: This ONLY works when the page is served through a web server
-        //       (http://localhost:5000/INDEX.HTML). Opening the file directly
-        //       (file://) will FAIL because browsers block fetch() for security.
-        // =========================================
+        // ================================================
+        // BACKEND API CONFIGURATION
+        // ================================================
+        const API_URL = 'http://localhost:5000';
+
+        // ================================================
+        // LOAD RECIPES FROM BACKEND API
+        // ================================================
         async function loadRecipes() {
             const grid = document.getElementById('recipe-grid');
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #666;"><i class="fas fa-spinner fa-spin fa-3x" style="margin-bottom: 1rem;"></i><p>Loading recipes from dataset...</p></div>';
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #666;"><i class="fas fa-spinner fa-spin fa-3x" style="margin-bottom: 1rem;"></i><p>Loading recipes...</p></div>';
             
             try {
-                // STEP 1: Build the CSV file path
-                // encodeURI() converts spaces → %20 so the browser can fetch it correctly
-                const csvPath = encodeURI('DATASET/Food Ingredients and Recipe Dataset with Image Name Mapping.csv');
+                // Fetch recipes from Backend API
+                // The backend combines MongoDB recipes + JSON files
+                const response = await fetch(`${API_URL}/api/recipes?limit=50`);
                 
-                // STEP 2: Fetch the CSV file from the server
-                const response = await fetch(csvPath);
-                
-                // STEP 3: Check if the file was found (200 = success)
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status} - CSV file not found or inaccessible.`);
+                    throw new Error(`API error! Status: ${response.status}`);
                 }
                 
-                // STEP 4: Convert response to plain text, then parse with PapaParse
-                const csvText = await response.text();
+                const data = await response.json();
                 
-                // Papa.parse() turns CSV text into a JavaScript array of objects
-                // header: true  → uses first row as property names (Title, Ingredients, etc.)
-                // skipEmptyLines: true → ignores blank rows
-                // .slice(0, 50) → only show first 50 recipes for performance
-                const recipes = Papa.parse(csvText, {header: true, skipEmptyLines: true}).data.slice(0, 50);
+                if (!data.success || !data.recipes) {
+                    throw new Error('Invalid API response');
+                }
                 
-                // STEP 5: Clear loading spinner and build recipe cards
+                const recipes = data.recipes;
                 grid.innerHTML = '';
+                
+                if (recipes.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #666;">No recipes found</div>';
+                    return;
+                }
+                
+                // Create recipe cards
                 recipes.forEach((r, index) => {
-                    // Skip rows that are missing a title or image name
-                    if (!r.Title || !r.Image_Name) return;
+                    if (!r.name) return;
                     
-                    // Encode image path so spaces in folder names don't break the image
-                    const imgPath = encodeURI(`DATASET/Food Images/Food Images/${r.Image_Name}.jpg`);
+                    const imgPath = r.image || 'https://via.placeholder.com/350x250?text=Recipe+Image';
+                    const desc = r.description ? r.description.slice(0, 100) + '...' : 'Delicious recipe!';
+                    const fullIng = Array.isArray(r.ingredients) ? r.ingredients : (r.ingredients || []);
                     
-                    // Build description from instructions (first 100 chars + ...)
-                    const desc = r.Instructions ? r.Instructions.slice(0, 100) + '...' : 'Delicious recipe!';
-                    const fullIng = r.Ingredients || 'Ingredients not available';
-                    const fullIns = r.Instructions || 'Instructions not available';
+                    let fullIns = '';
+                    if (Array.isArray(r.steps)) {
+                        fullIns = r.steps.join('\n');
+                    } else if (r.instructions) {
+                        fullIns = r.instructions;
+                    } else {
+                        fullIns = 'Instructions not available';
+                    }
                     
-                    // Create the card HTML element
                     const card = document.createElement('div');
                     card.className = 'recipe-card';
-                    card.dataset.title = r.Title;
+                    card.dataset.title = r.name;
                     card.dataset.img = imgPath;
-                    card.dataset.desc = desc;
-                    card.dataset.fullIng = fullIng;
+                    card.dataset.fullIng = JSON.stringify(fullIng);
                     card.dataset.fullIns = fullIns;
-                    card.style.animationDelay = `${0.1 * index}s`; // staggered animation
-                    
-                    // Fallback image if the recipe image is missing
-                    const fallbackImg = encodeURI('DATASET/Food Images/Food Images/3-ingredient-caramel-apple-tart.jpg');
+                    card.dataset.author = r.author || 'Unknown';
+                    card.style.animationDelay = `${0.1 * (index % 12)}s`;
                     
                     card.innerHTML = `
-                        <img class="card-img" src="${imgPath}" alt="${r.Title}" loading="lazy" onerror="this.src='${fallbackImg}';">
+                        <img class="card-img" src="${imgPath}" alt="${r.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/350x250?text=Recipe';">
                         <div class="card-content">
-                            <h3 class="card-title">${r.Title}</h3>
+                            <h3 class="card-title">${r.name}</h3>
                             <p class="card-desc">${desc}</p>
-                            <i class="fas fa-fire card-icon"></i>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <i class="fas fa-fire card-icon"></i>
+                                ${r.rattings ? `<span style="color: #e4ae0b; font-size: 0.9rem;">⭐ ${r.rattings}/5</span>` : ''}
+                            </div>
                         </div>
                     `;
+                    
                     grid.appendChild(card);
                 });
                 
-                // STEP 6: Attach click events so cards open the modal
                 attachModalListeners();
                 
             } catch (error) {
-                // =========================================
-                // ERROR HANDLING + FALLBACK RECIPES
-                // =========================================
-                // If fetching fails (e.g. opened file directly, server not running),
-                // show a helpful message AND display sample recipes so the page isn't empty.
-                // =========================================
-                console.error('Error loading recipes:', error);
-                
-                const fallbackRecipes = [
-                    {
-                        title: 'Miso-Butter Roast Chicken With Acorn Squash Panzanella',
-                        img: encodeURI('DATASET/Food Images/Food Images/miso-butter-roast-chicken-acorn-squash-panzanella.jpg'),
-                        desc: 'Pat chicken dry with paper towels, season all over with salt, and tie legs together...',
-                        ing: "['1 (3½–4-lb.) whole chicken', '2¾ tsp. kosher salt', '2 small acorn squash', '6 Tbsp. unsalted butter']",
-                        ins: 'Pat chicken dry, season, roast at 425°F for 50–60 minutes. Serve with panzanella.'
-                    },
-                    {
-                        title: 'Crispy Salt and Pepper Potatoes',
-                        img: encodeURI('DATASET/Food Images/Food Images/crispy-salt-and-pepper-potatoes-dan-kluger.jpg'),
-                        desc: 'Preheat oven to 400°F and line a rimmed baking sheet with parchment...',
-                        ing: "['2 large egg whites', '1 pound new potatoes', '2 teaspoons kosher salt']",
-                        ins: 'Whisk egg whites until foamy, toss potatoes, season and roast 15–20 minutes.'
-                    },
-                    {
-                        title: 'Thanksgiving Mac and Cheese',
-                        img: encodeURI('DATASET/Food Images/Food Images/thanksgiving-mac-and-cheese-erick-williams.jpg'),
-                        desc: 'Place a rack in middle of oven; preheat to 400°. Bring milks to a bare simmer...',
-                        ing: "['1 cup evaporated milk', '2 lb. extra-sharp cheddar', '1 lb. elbow macaroni']",
-                        ins: 'Simmer milk, whisk in cheese, cook macaroni, combine and bake until melted.'
-                    },
-                    {
-                        title: 'Italian Sausage and Bread Stuffing',
-                        img: encodeURI('DATASET/Food Images/Food Images/italian-sausage-and-bread-stuffing-240559.jpg'),
-                        desc: 'Preheat oven to 350°F with rack in middle. Generously butter baking dish...',
-                        ing: "['1 round Italian loaf', '2 pounds sweet Italian sausage', '1 stick unsalted butter']",
-                        ins: 'Toast bread, brown sausage, sauté vegetables, mix with eggs and cream, bake.'
-                    }
-                ];
+                console.error('Error:', error);
                 
                 grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #e74c3c; background: #fdf2f2; border-radius: 15px; margin-bottom: 2rem;">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #e74c3c; background: #fdf2f2; border-radius: 15px;">
                         <i class="fas fa-exclamation-triangle fa-2x" style="margin-bottom: 1rem;"></i>
-                        <p><strong>Could not load the full dataset.</strong></p>
+                        <p><strong>⚠ Could not load recipes from database</strong></p>
                         <p style="font-size: 0.9rem; margin-top: 0.5rem;">
-                            Make sure you started the backend server:<br>
-                            <code style="background:#eee;padding:2px 6px;border-radius:4px;">cd BACKEND/backend && npm run dev</code><br>
-                            Then visit <code style="background:#eee;padding:2px 6px;border-radius:4px;">http://localhost:5000/INDEX.HTML</code>
+                            <strong>Start the Backend Server:</strong><br><br>
+                            <code style="background:#eee;padding:8px;border-radius:4px;display:block;margin:0.5rem 0;font-family:monospace;">
+                                cd BACKEND && npm install && npm run dev
+                            </code>
                         </p>
-                        <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #666;">
-                            (Opening the HTML file directly with double-click will NOT work because of browser security.)
+                        <p style="font-size: 0.85rem; margin-top: 1rem; color: #666;">
+                            ✓ MongoDB must be running<br>
+                            ✓ Backend runs on http://localhost:5000<br>
+                            📝 Refresh page after starting server
                         </p>
                     </div>
                 `;
-                
-                // Render fallback recipe cards so the page isn't empty
-                fallbackRecipes.forEach((r, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'recipe-card';
-                    card.dataset.title = r.title;
-                    card.dataset.img = r.img;
-                    card.dataset.desc = r.desc;
-                    card.dataset.fullIng = r.ing;
-                    card.dataset.fullIns = r.ins;
-                    card.style.animationDelay = `${0.1 * index}s`;
-                    card.innerHTML = `
-                        <img class="card-img" src="${r.img}" alt="${r.title}" loading="lazy" onerror="this.src='${encodeURI('DATASET/Food Images/Food Images/3-ingredient-caramel-apple-tart.jpg')}';">
-                        <div class="card-content">
-                            <h3 class="card-title">${r.title}</h3>
-                            <p class="card-desc">${r.desc}</p>
-                            <i class="fas fa-fire card-icon"></i>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-                
-                attachModalListeners();
             }
         }
 
+        // ================================================
+        // MODAL FUNCTIONALITY
+        // ================================================
         function attachModalListeners() {
             const cards = document.querySelectorAll('.recipe-card');
             cards.forEach(card => {
@@ -339,28 +311,28 @@
                     document.getElementById('modal-title').textContent = title;
                     document.getElementById('modal-img').src = img;
                     
-                    // Parse ingredients JSON array
-                    let ingHTML = '<ul style="margin: 0; padding-left: 1.5rem;">';
+                    // Parse and display ingredients
+                    let ingHTML = '<ul>';
                     try {
-                        const ingArray = JSON.parse(ing.replace(/'/g, '"'));
-                        ingArray.slice(0, 15).forEach(item => { // Limit to 15
+                        const ingArray = JSON.parse(ing);
+                        ingArray.slice(0, 15).forEach(item => { 
                             ingHTML += `<li>${item}</li>`;
                         });
-                        if (ingArray.length > 15) ingHTML += '<li>...</li>';
+                        if (ingArray.length > 15) ingHTML += '<li style="font-weight: bold;">... and more</li>';
                     } catch (e) {
                         ingHTML += `<li>${ing}</li>`;
                     }
                     ingHTML += '</ul>';
                     document.getElementById('modal-ing').innerHTML = ingHTML;
                     
+                    // Display instructions
                     document.getElementById('modal-ins').innerHTML = ins.replace(/\n/g, '<br>');
-
                     document.getElementById('recipe-modal').style.display = 'block';
                 });
             });
         }
 
-        // Modal functionality
+        // Modal controls
         const modal = document.getElementById('recipe-modal');
         const closeBtn = document.querySelector('.close');
 
@@ -368,14 +340,12 @@
         window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
         window.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.style.display = 'none'; });
 
-        // Active nav highlight
+        // Highlight active nav button
         document.querySelector('.nav-btn.active').style.background = '#e4ae0b';
         document.querySelector('.nav-btn.active').style.color = '#000';
 
-        // Load recipes on page load
+        // Load recipes when page loads
         window.addEventListener('DOMContentLoaded', loadRecipes);
     </script>
-
 </body>
 </html>
-

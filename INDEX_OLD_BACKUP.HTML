@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<!-- 
+    ============================================
+    SUPER.RECIPE - RECIPE SHOWCASE PAGE
+    ============================================
+    This is the main recipe display page.
+    - Shows a collection of recipes as clickable cards
+    - Loads recipes from a CSV dataset file
+    - Opens a popup modal when you click on a recipe
+    - Uses modern CSS animations and responsive design
+    - For beginners: Search for "BEGINNER NOTE" in this file to find helpful explanations
+    ============================================
+-->
+<html lang="en">
+<head>
+    <!-- Basic page metadata - tells browser how to read this page -->
+    <meta charset="UTF-8">
+    <!-- Makes website responsive on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUPER.RECIPE - Interactive Recipe Showcase</title>
+    
+    <!-- BEGINNER NOTE: External CSS libraries we're using -->
+    <!-- Font Awesome: provides nice icons (star, heart, fire, etc.) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Shared navigation styles from our project -->
+    <link rel="stylesheet" href="styles/shared-nav.css">
+    
+    <!-- BEGINNER NOTE: External JavaScript library for parsing CSV files -->
+    <!-- PapaParse: converts CSV text into JavaScript objects we can use -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <style>
+        /* ================================================
+           SECTION 1: RESET & GLOBAL STYLES
+           ================================================
+           BEGINNER NOTE: We start by "resetting" browser 
+           default styles so we have a clean slate to work with.
+        */
+        * { 
+            margin: 0;           /* Remove default spacing around elements */
+            padding: 0;          /* Remove default padding inside elements */
+            box-sizing: border-box; /* Include padding/border in width calculation */
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean, modern font */
+            line-height: 1.6;    /* Space between lines of text (improves readability) */
+            color: #333;         /* Dark gray text color */
+            overflow-x: hidden;  /* Prevent horizontal scrollbar */
+        }
+
+        /* ================================================
+           SECTION 2: NAVIGATION BAR
+           ================================================
+           The top navigation bar that stays fixed in place
+        */
+        .nav {
+            position: fixed;     /* Stay in one place when scrolling */
+            top: 20px;           /* 20 pixels from top */
+            right: 20px;         /* 20 pixels from right */
+            z-index: 1000;       /* Always appear on top of other elements */
+        }
+        
+        /* SVG outline animation (the decorative border) */
+        .nav .outline { 
+            position: absolute; 
+            inset: 0;            /* Fill entire space of parent */
+            pointer-events: none; /* Don't interfere with clicking buttons */
+        }
+        
+        .nav .rect { 
+            stroke-dashoffset: 5;           /* Creates dashed line effect */
+            stroke-dasharray: 0 0 10 40 10 40; /* Animation line pattern */
+            transition: 0.5s;               /* Smooth animation over 0.5 seconds */
+            stroke: #e4ae0b;                /* Gold/yellow color */
+        }
+        
+        .nav:hover .rect { 
+            transition: 999999s;            /* Very slow animation on hover */
+            stroke-dashoffset: 1;           /* Moves the dash pattern */
+            stroke-dasharray: 0;            /* Solid line instead of dashed */
+        }
+        
+        /* Navigation button container */
+        .nav-container { 
+            background: rgba(16,16,16,0.9);     /* Dark semi-transparent background */
+            backdrop-filter: blur(10px);        /* Blur effect (frosted glass look) */
+            display: flex;                      /* Arrange buttons in a row */
+            flex-direction: row;                /* Horizontal layout */
+            justify-content: space-around;      /* Space buttons evenly */
+            align-items: center;                /* Center items vertically */
+            padding: 0.5em;                     /* Internal spacing */
+            border-radius: 40px;                /* Very rounded corners */
+            width: clamp(450px, 65vw, 650px);  /* BEGINNER NOTE: clamp() means: min 450px, ideal 65% of viewport, max 650px */
+            height: 60px;                       /* Height of nav bar */
+        }
+        
+        /* Individual nav buttons */
+        .nav-btn { 
+            padding: 0.5em 1.5em;              /* Internal spacing */
+            color: #fff;                       /* White text */
+            cursor: pointer;                   /* Show pointer on hover */
+            transition: 0.3s;                  /* Smooth transitions */
+            border-radius: 10px;               /* Rounded corners */
+            font-weight: 500;                  /* Medium font weight */
+            white-space: nowrap;               /* Keep text on one line */
+            background: none;                  /* No background by default */
+            border: none;                      /* No border */
+        }
+        
+        .nav-btn:hover { 
+            background: #e4ae0b;               /* Gold background on hover */
+            color: #000;                       /* Black text on hover */
+            transform: translateY(-2px);       /* Move up slightly */
+            box-shadow: 0 5px 15px rgba(228,174,11,0.4); /* Gold shadow effect */
+        }
+        
+        /* Mobile version: make nav smaller */
+        @media (max-width: 768px) { 
+            .nav-container { 
+                width: clamp(350px,75vw,450px); 
+                height: 50px; 
+                padding: 0.3em; 
+            } 
+            .nav-btn { 
+                padding: 0.4em 0.8em; 
+                font-size: 0.85rem;  /* Smaller text on mobile */
+            } 
+        }
+
+        /* ================================================
+           SECTION 3: HERO SECTION (Big welcoming banner)
+           ================================================
+        */
+        .hero { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); /* Purple/pink gradient */
+            height: 100vh;              /* Full viewport height */
+            display: flex;              /* Center content inside */
+            flex-direction: column;     /* Stack items vertically */
+            justify-content: center;    /* Center vertically */
+            align-items: center;        /* Center horizontally */
+            text-align: center;         /* Center text */
+            color: white;               /* White text */
+            padding: 0 20px;            /* Side padding */
+            position: relative;         /* For positioning child elements */
+        }
+        
+        .hero h1 { 
+            font-size: clamp(2.5rem, 5vw, 4rem); /* BEGINNER NOTE: Responsive font size */
+            margin-bottom: 1rem;        /* Space below heading */
+            animation: fadeInUp 1s ease-out; /* Animate in from bottom */
+        }
+        
+        .hero p { 
+            font-size: 1.5rem; 
+            margin-bottom: 2rem; 
+            animation: fadeInUp 1s ease-out 0.2s both; /* Same animation, starts 0.2s later */
+        }
+        
+        /* The login button in hero section */
+        .login-btn { 
+            background: rgba(255,255,255,0.2);          /* Transparent white background */
+            color: white; 
+            border: 2px solid rgba(255,255,255,0.5);   /* Semi-transparent border */
+            padding: 15px 30px;                         /* Button padding */
+            border-radius: 50px;                        /* Pill-shaped button */
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            text-decoration: none;                      /* Remove link underline */
+            transition: all 0.3s;                       /* Smooth transitions */
+            backdrop-filter: blur(10px);                /* Frosted glass effect */
+            animation: fadeInUp 1s ease-out 0.4s both; /* Animate after h1 and p */
+        }
+        
+        .login-btn:hover { 
+            background: rgba(255,255,255,0.3);  /* More opaque white on hover */
+            border-color: white;                /* Solid white border */
+            transform: translateY(-3px);        /* Move up */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* Shadow effect */
+        }
+
+        /* ================================================
+           SECTION 4: RECIPE CARDS SECTION
+           ================================================
+        */
+        .recipes-section { 
+            padding: 80px 20px;  /* Top/bottom: 80px, left/right: 20px */
+            max-width: 1400px;   /* Don't get wider than 1400px */
+            margin: 0 auto;      /* Center on page */
+        }
+        
+        .section-title { 
+            text-align: center; 
+            font-size: 3rem; 
+            margin-bottom: 4rem;  /* Space below title */
+            color: #333;          /* Dark text */
+        }
+        
+        /* The grid container for recipe cards */
+        #recipe-grid { 
+            display: grid;                              /* Create grid layout */
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* BEGINNER NOTE: auto-fit means "fill space with cards, each at least 350px wide" */
+            gap: 2rem;                                  /* Space between cards */
+            animation: fadeInUp 1s ease-out;            /* Animate grid in */
+        }
+        
+        /* Individual recipe cards */
+        .recipe-card { 
+            background: white;                             /* White card background */
+            border-radius: 20px;                           /* Rounded corners */
+            overflow: hidden;                              /* Hide content that goes outside card */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);      /* Subtle shadow */
+            transition: all 0.4s cubic-bezier(0.25,0.46,0.45,0.94); /* Smooth animation with custom curve */
+            cursor: pointer;                               /* Show it's clickable */
+            opacity: 0;                                    /* Start invisible */
+            transform: translateY(50px);                   /* Start 50px below final position */
+            animation: fadeInUp 0.8s ease-out forwards;   /* Animate to visible */
+            animation-fill-mode: both;                    /* Keep final animation state */
+        }
+        
+        /* BEGINNER NOTE: Add slight delay to each card so they appear one after another */
+        .recipe-card:nth-child(1) { animation-delay: 0.1s; }
+        .recipe-card:nth-child(2) { animation-delay: 0.2s; }
+        .recipe-card:nth-child(3) { animation-delay: 0.3s; }
+        .recipe-card:nth-child(4) { animation-delay: 0.4s; }
+        .recipe-card:nth-child(5) { animation-delay: 0.5s; }
+        .recipe-card:nth-child(6) { animation-delay: 0.6s; }
+        .recipe-card:nth-child(7) { animation-delay: 0.7s; }
+        .recipe-card:nth-child(8) { animation-delay: 0.8s; }
+        .recipe-card:nth-child(9) { animation-delay: 0.9s; }
+        .recipe-card:nth-child(10) { animation-delay: 1s; }
+        .recipe-card:nth-child(11) { animation-delay: 1.1s; }
+        .recipe-card:nth-child(12) { animation-delay: 1.2s; }
+        
+        /* Hover effect on cards */
+        .recipe-card:hover { 
+            transform: translateY(-15px) scale(1.02);                    /* Move up and zoom */
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);                   /* Bigger shadow on hover */
+        }
+        
+        .card-img { 
+            height: 250px;      /* Image height */
+            object-fit: cover;  /* Cover entire space, crop if needed */
+            width: 100%;        /* Full width */
+        }
+        
+        .card-content { 
+            padding: 1.5rem;    /* Space inside card */
+        }
+        
+        .card-title { 
+            font-size: 1.5rem; 
+            margin-bottom: 0.5rem; 
+            color: #333; 
+        }
+        
+        .card-desc { 
+            color: #666;        /* Gray text */
+            margin-bottom: 1rem; 
+        }
+        
+        .card-icon { 
+            color: #e4ae0b;     /* Gold icon color */
+        }
+
+        /* ================================================
+           SECTION 5: MODAL (Popup window)
+           ================================================
+           Shows when you click on a recipe card
+        */
+        #recipe-modal { 
+            display: none;                          /* Hidden by default */
+            position: fixed;                        /* Cover entire screen */
+            z-index: 2000;                          /* Above everything else */
+            left: 0; top: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8);           /* Dark semi-transparent overlay */
+            backdrop-filter: blur(5px);            /* Blurred background effect */
+            animation: fadeIn 0.3s;                /* Fade in animation */
+        }
+        
+        .modal-content { 
+            position: absolute; 
+            top: 50%; left: 50%;                    /* Position at center */
+            transform: translate(-50%, -50%);       /* Center it */
+            width: 90%;                             /* 90% of viewport width */
+            max-width: 900px;                       /* Don't get wider than 900px */
+            max-height: 90vh;                       /* Don't get taller than 90% of viewport */
+            background: white;                      /* White background */
+            border-radius: 20px;                    /* Rounded corners */
+            padding: 2.5rem;                        /* Internal padding */
+            overflow-y: auto;                       /* Scrollable if content is too tall */
+            animation: modalSlideIn 0.3s;          /* Slide in animation */
+            line-height: 1.6;                      /* Readable line spacing */
+            font-size: 1.05rem;                    /* Slightly larger text */
+        }
+
+        .close { 
+            color: #aaa;            /* Gray X button */
+            float: right;           /* Position on right */
+            font-size: 2rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+        
+        .close:hover { 
+            color: #333;            /* Darker on hover */
+        }
+        
+        .modal-img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            margin-bottom: 1rem; 
+        }
+        
+        .modal-title { 
+            font-size: 1.8rem; 
+            margin-bottom: 1rem; 
+        }
+        
+        .modal-section { 
+            margin-bottom: 1.5rem; 
+        }
+        
+        .modal-section h3 { 
+            color: #e4ae0b;         /* Gold heading color */
+            margin-bottom: 0.5rem; 
+        }
+
+        /* ================================================
+           SECTION 6: ANIMATIONS
+           ================================================
+        */
+        @keyframes fadeInUp { 
+            from { 
+                opacity: 0;                    /* Completely transparent */
+                transform: translateY(50px);  /* Start 50px below */
+            } 
+            to { 
+                opacity: 1;                    /* Fully visible */
+                transform: translateY(0);     /* Final position */
+            } 
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+        
+        @keyframes modalSlideIn { 
+            from { 
+                opacity: 0; 
+                transform: translate(-50%, -60%);  /* Start higher */
+            } 
+            to { 
+                opacity: 1; 
+                transform: translate(-50%, -50%);  /* Final centered position */
+            } 
+        }
+
+        /* ================================================
+           SECTION 7: RESPONSIVE DESIGN (Mobile, Tablet)
+           ================================================
+        */
+        @media (max-width: 768px) { 
+            .recipes-section { 
+                padding: 60px 10px; 
+            } 
+            .section-title { 
+                font-size: 2.5rem; 
+            } 
+            #recipe-grid { 
+                grid-template-columns: 1fr;  /* Single column on mobile */
+                gap: 1.5rem; 
+            }
+            .hero { 
+                padding: 0 10px; 
+                height: 80vh;  /* Slightly smaller on mobile */
+            }
+        }
+        
+        /* Tablet size: 2 columns */
+        @media (min-width: 769px) and (max-width: 1024px) { 
+            #recipe-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+            } 
+        }
+    </style>
+</head>
+<body>
+    <!-- ================================================
+         NAVIGATION BAR
+         ================================================ -->
+    <nav class="nav">
+        <div class="nav-container">
+            <!-- Navigation buttons that link to different pages -->
+            <button class="nav-btn" onclick="location.href='indexMain.html'">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <a href="LOGIN PAGE.HTML" class="nav-btn login-nav">
+                <i class="fas fa-user"></i> Login
+            </a>
+            <button class="nav-btn" onclick="location.href='ADD RECIPE PAGE.HTML'">
+                <i class="fas fa-plus"></i> Add Recipe
+            </button>
+            <button class="nav-btn active" onclick="location.href='INDEX.HTML'">
+                <i class="fas fa-list"></i> Recipes
+            </button>
+            <button class="nav-btn" onclick="location.href='SEARCHING RECIPE FROM MEAL DP.html'">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+        <!-- Animated SVG border around nav bar -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 60" height="60" width="400" class="outline">
+            <rect stroke-width="5" fill="transparent" height="60" width="650" y="0" x="0" pathLength="100" class="rect"></rect>
+        </svg>
+    </nav>
+
+    <!-- ================================================
+         HERO SECTION (Welcome Banner)
+         ================================================ -->
+    <section class="hero">
+        <h1>Discover Delicious Recipes</h1>
+        <p>Interactive showcase of mouthwatering dishes</p>
+        <a href="LOGIN PAGE.HTML" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Login to Save Favorites
+        </a>
+    </section>
+
+    <!-- ================================================
+         RECIPES DISPLAY SECTION
+         ================================================
+         BEGINNER NOTE: The recipes will be loaded by JavaScript
+         and inserted into the #recipe-grid div below
+    -->
+    <section class="recipes-section">
+        <h2 class="section-title">
+            <i class="fas fa-utensils"></i> Featured Recipes
+        </h2>
+        <!-- Recipe cards will appear here via JavaScript -->
+        <div id="recipe-grid">
+            <!-- Loading spinner shown while fetching recipes -->
+            <div class="loading" style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #666;">
+                <i class="fas fa-spinner fa-spin fa-3x" style="margin-bottom: 1rem;"></i>
+                <p>Loading recipes from dataset...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         MODAL (Popup) FOR RECIPE DETAILS
+         ================================================
+         Shows when you click on a recipe card
+    -->
+    <div id="recipe-modal">
+        <div class="modal-content">
+            <!-- Close button (X) -->
+            <span class="close">&times;</span>
+            
+            <!-- Recipe image -->
+            <img id="modal-img" class="modal-img" src="" alt="">
+            
+            <!-- Recipe title -->
+            <h2 id="modal-title"></h2>
+            
+            <!-- Ingredients section -->
+            <div class="modal-section">
+                <h3><i class="fas fa-list"></i> Ingredients</h3>
+                <p id="modal-ing"></p>
+            </div>
+            
+            <!-- Instructions section -->
+            <div class="modal-section">
+                <h3><i class="fas fa-utensils"></i> Instructions</h3>
+                <p id="modal-ins"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================================================
+           JAVASCRIPT: LOAD AND DISPLAY RECIPES
+           ================================================
+           BEGINNER NOTE: This section contains the main logic
+           that loads recipes and makes them interactive
+           
+           UPDATED: Now fetches from Backend API Server
+           - /api/recipes - Get all recipes
+           - /api/recipes/search - Search recipes
+           - Backend connects MongoDB + JSON files
+        */
+        
+        // API Server URL - Change if backend runs on different port/host
+        const API_URL = 'http://localhost:5000';
+        
+        // =========================================
+        // MAIN FUNCTION: Load Recipes from Backend API
+        // =========================================
+        // BEGINNER NOTE: This is an "async" function, meaning it can
+        // wait for things to finish (like downloading files) without
+        // freezing the page. The "await" keyword pauses until a task
+        // is complete, then continues to the next line.
+        // =========================================
+        async function loadRecipes() {
+            // Get the recipe grid where we'll place the cards
+            const grid = document.getElementById('recipe-grid');
+            
+            // Show loading spinner while we fetch data
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #666;"><i class="fas fa-spinner fa-spin fa-3x" style="margin-bottom: 1rem;"></i><p>Loading recipes from dataset...</p></div>';
+            
+            try {
+                // =========================================
+                // STEP 1: Build the CSV file path
+                // =========================================
+                // BEGINNER NOTE: encodeURI() converts spaces → %20 so the 
+                // browser can find and download the file correctly.
+                // Example: "Food Images/my file.csv" → "Food Images/my%20file.csv"
+                // =========================================
+                const csvPath = encodeURI('DATASET/Food Ingredients and Recipe Dataset with Image Name Mapping.csv');
+                
+                // =========================================
+                // STEP 2: Download the CSV file
+                // =========================================
+                // BEGINNER NOTE: fetch() is like asking the server for a file.
+                // It's asynchronous, so we "await" (wait for) the download.
+                // =========================================
+                const response = await fetch(csvPath);
+                
+                // =========================================
+                // STEP 3: Check if the download succeeded
+                // =========================================
+                // BEGINNER NOTE: response.ok is true if status was 200 (success).
+                // If false, the file wasn't found or there's a server error.
+                // =========================================
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} - CSV file not found or inaccessible.`);
+                }
+                
+                // =========================================
+                // STEP 4: Convert file to text and parse CSV
+                // =========================================
+                // BEGINNER NOTE: response.text() gets the file content as text.
+                // Papa.parse() is a library that converts CSV text into JavaScript objects.
+                // Example CSV:
+                //   Title,Ingredients,Instructions,Image_Name
+                //   Pizza,flour;cheese,mix;bake,pizza.jpg
+                // Becomes:
+                //   {Title: "Pizza", Ingredients: "flour;cheese", ...}
+                // =========================================
+                const csvText = await response.text();
+                
+                // Parse CSV with settings:
+                // - header: true → use first row as property names
+                // - skipEmptyLines: true → ignore blank rows
+                // - .slice(0, 50) → only use first 50 recipes (for performance)
+                const recipes = Papa.parse(csvText, {header: true, skipEmptyLines: true}).data.slice(0, 50);
+                
+                // =========================================
+                // STEP 5: Clear loading spinner
+                // =========================================
+                grid.innerHTML = '';
+                
+                // =========================================
+                // STEP 6: Create a card for each recipe
+                // =========================================
+                // BEGINNER NOTE: forEach() loops through each recipe one by one.
+                // For each recipe, we create an HTML card and add it to the page.
+                // =========================================
+                recipes.forEach((r, index) => {
+                    // Skip rows that don't have a title or image name
+                    // (incomplete recipes can break the page)
+                    if (!r.Title || !r.Image_Name) return;
+                    
+                    // Encode image path so spaces work correctly
+                    const imgPath = encodeURI(`DATASET/Food Images/Food Images/${r.Image_Name}.jpg`);
+                    
+                    // Create a short description (first 100 characters + ...)
+                    const desc = r.Instructions ? r.Instructions.slice(0, 100) + '...' : 'Delicious recipe!';
+                    const fullIng = r.Ingredients || 'Ingredients not available';
+                    const fullIns = r.Instructions || 'Instructions not available';
+                    
+                    // Create the recipe card element
+                    const card = document.createElement('div');
+                    card.className = 'recipe-card';
+                    
+                    // Store recipe data in the card so we can access it when clicked
+                    // (we use "dataset" to store custom data attributes)
+                    card.dataset.title = r.Title;
+                    card.dataset.img = imgPath;
+                    card.dataset.desc = desc;
+                    card.dataset.fullIng = fullIng;
+                    card.dataset.fullIns = fullIns;
+                    
+                    // Stagger animation: each card appears 0.1s after the previous one
+                    card.style.animationDelay = `${0.1 * index}s`;
+                    
+                    // Backup image if the recipe image is missing
+                    const fallbackImg = encodeURI('DATASET/Food Images/Food Images/3-ingredient-caramel-apple-tart.jpg');
+                    
+                    // Create the card HTML with image, title, and description
+                    card.innerHTML = `
+                        <img class="card-img" src="${imgPath}" alt="${r.Title}" loading="lazy" onerror="this.src='${fallbackImg}';">
+                        <div class="card-content">
+                            <h3 class="card-title">${r.Title}</h3>
+                            <p class="card-desc">${desc}</p>
+                            <i class="fas fa-fire card-icon"></i>
+                        </div>
+                    `;
+                    
+                    // Add the card to the page
+                    grid.appendChild(card);
+                });
+                
+                // =========================================
+                // STEP 7: Make cards clickable
+                // =========================================
+                // BEGINNER NOTE: Now that cards are on the page, we add click listeners
+                // so clicking a card opens the modal with full recipe details.
+                // =========================================
+                attachModalListeners();
+                
+            } catch (error) {
+                // =========================================
+                // ERROR HANDLING + FALLBACK RECIPES
+                // =========================================
+                // If something goes wrong (server not running, file not found, etc),
+                // show an error message AND display fallback recipes so the page
+                // isn't empty and useless.
+                // =========================================
+                console.error('Error loading recipes:', error);
+                
+                // Sample recipes to show if main dataset fails to load
+                const fallbackRecipes = [
+                    {
+                        title: 'Miso-Butter Roast Chicken With Acorn Squash Panzanella',
+                        img: encodeURI('DATASET/Food Images/Food Images/miso-butter-roast-chicken-acorn-squash-panzanella.jpg'),
+                        desc: 'Pat chicken dry with paper towels, season all over with salt, and tie legs together...',
+                        ing: "['1 (3½–4-lb.) whole chicken', '2¾ tsp. kosher salt', '2 small acorn squash', '6 Tbsp. unsalted butter']",
+                        ins: 'Pat chicken dry, season, roast at 425°F for 50–60 minutes. Serve with panzanella.'
+                    },
+                    {
+                        title: 'Crispy Salt and Pepper Potatoes',
+                        img: encodeURI('DATASET/Food Images/Food Images/crispy-salt-and-pepper-potatoes-dan-kluger.jpg'),
+                        desc: 'Preheat oven to 400°F and line a rimmed baking sheet with parchment...',
+                        ing: "['2 large egg whites', '1 pound new potatoes', '2 teaspoons kosher salt']",
+                        ins: 'Whisk egg whites until foamy, toss potatoes, season and roast 15–20 minutes.'
+                    },
+                    {
+                        title: 'Thanksgiving Mac and Cheese',
+                        img: encodeURI('DATASET/Food Images/Food Images/thanksgiving-mac-and-cheese-erick-williams.jpg'),
+                        desc: 'Place a rack in middle of oven; preheat to 400°. Bring milks to a bare simmer...',
+                        ing: "['1 cup evaporated milk', '2 lb. extra-sharp cheddar', '1 lb. elbow macaroni']",
+                        ins: 'Simmer milk, whisk in cheese, cook macaroni, combine and bake until melted.'
+                    },
+                    {
+                        title: 'Italian Sausage and Bread Stuffing',
+                        img: encodeURI('DATASET/Food Images/Food Images/italian-sausage-and-bread-stuffing-240559.jpg'),
+                        desc: 'Preheat oven to 350°F with rack in middle. Generously butter baking dish...',
+                        ing: "['1 round Italian loaf', '2 pounds sweet Italian sausage', '1 stick unsalted butter']",
+                        ins: 'Toast bread, brown sausage, sauté vegetables, mix with eggs and cream, bake.'
+                    }
+                ];
+                
+                // Display helpful error message
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #e74c3c; background: #fdf2f2; border-radius: 15px; margin-bottom: 2rem;">
+                        <i class="fas fa-exclamation-triangle fa-2x" style="margin-bottom: 1rem;"></i>
+                        <p><strong>Could not load the full dataset.</strong></p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                            Make sure you started the backend server:<br>
+                            <code style="background:#eee;padding:2px 6px;border-radius:4px;">cd BACKEND/backend && npm run dev</code><br>
+                            Then visit <code style="background:#eee;padding:2px 6px;border-radius:4px;">http://localhost:5000/INDEX.HTML</code>
+                        </p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #666;">
+                            (Opening the HTML file directly with double-click will NOT work because of browser security.)
+                        </p>
+                    </div>
+                `;
+                
+                // Show fallback recipes so page isn't empty
+                fallbackRecipes.forEach((r, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'recipe-card';
+                    card.dataset.title = r.title;
+                    card.dataset.img = r.img;
+                    card.dataset.desc = r.desc;
+                    card.dataset.fullIng = r.ing;
+                    card.dataset.fullIns = r.ins;
+                    card.style.animationDelay = `${0.1 * index}s`;
+                    card.innerHTML = `
+                        <img class="card-img" src="${r.img}" alt="${r.title}" loading="lazy" onerror="this.src='${encodeURI('DATASET/Food Images/Food Images/3-ingredient-caramel-apple-tart.jpg')}';">
+                        <div class="card-content">
+                            <h3 class="card-title">${r.title}</h3>
+                            <p class="card-desc">${r.desc}</p>
+                            <i class="fas fa-fire card-icon"></i>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                
+                attachModalListeners();
+            }
+        }
+
+        // =========================================
+        // FUNCTION: Handle recipe card clicks
+        // =========================================
+        // BEGINNER NOTE: When user clicks on a recipe card,
+        // populate and show the modal with full recipe details
+        // =========================================
+        function attachModalListeners() {
+            // Get all recipe cards on the page
+            const cards = document.querySelectorAll('.recipe-card');
+            
+            // Add click listener to each card
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // Get recipe data stored in the card's data attributes
+                    const title = card.dataset.title;
+                    const img = card.dataset.img;
+                    const ing = card.dataset.fullIng;
+                    const ins = card.dataset.fullIns;
+
+                    // Fill in modal title and image
+                    document.getElementById('modal-title').textContent = title;
+                    document.getElementById('modal-img').src = img;
+                    
+                    // BEGINNER NOTE: Parse ingredients JSON array and create HTML list
+                    // Ingredients are stored as a JSON string like: "['flour', 'sugar']"
+                    // We parse it back into an array and create <li> elements
+                    let ingHTML = '<ul style="margin: 0; padding-left: 1.5rem;">';
+                    try {
+                        // Replace single quotes with double quotes so JSON parser works
+                        const ingArray = JSON.parse(ing.replace(/'/g, '"'));
+                        
+                        // Show first 15 ingredients (limit long lists)
+                        ingArray.slice(0, 15).forEach(item => { 
+                            ingHTML += `<li>${item}</li>`;
+                        });
+                        
+                        // If more than 15 ingredients, show "..." indicator
+                        if (ingArray.length > 15) ingHTML += '<li>...</li>';
+                    } catch (e) {
+                        // If parsing fails, just show the raw ingredient text
+                        ingHTML += `<li>${ing}</li>`;
+                    }
+                    ingHTML += '</ul>';
+                    document.getElementById('modal-ing').innerHTML = ingHTML;
+                    
+                    // Show instructions (replace newlines with <br> for line breaks)
+                    document.getElementById('modal-ins').innerHTML = ins.replace(/\n/g, '<br>');
+
+                    // Show the modal
+                    document.getElementById('recipe-modal').style.display = 'block';
+                });
+            });
+        }
+
+        // =========================================
+        // MODAL CONTROLS (close button, ESC key, click outside)
+        // =========================================
+        // BEGINNER NOTE: Users can close the modal three ways:
+        // 1. Click the X button
+        // 2. Press ESC key
+        // 3. Click outside the modal
+        // =========================================
+        const modal = document.getElementById('recipe-modal');
+        const closeBtn = document.querySelector('.close');
+
+        // Close when clicking X button
+        closeBtn.addEventListener('click', () => modal.style.display = 'none');
+        
+        // Close when clicking outside the modal
+        window.addEventListener('click', (e) => { 
+            if (e.target === modal) modal.style.display = 'none'; 
+        });
+        
+        // Close when pressing ESC key
+        window.addEventListener('keydown', (e) => { 
+            if (e.key === 'Escape') modal.style.display = 'none'; 
+        });
+
+        // =========================================
+        // NAVIGATION HIGHLIGHT
+        // =========================================
+        // BEGINNER NOTE: Highlight the current page button in nav
+        // (add gold background to show we're on this page)
+        // =========================================
+        document.querySelector('.nav-btn.active').style.background = '#e4ae0b';
+        document.querySelector('.nav-btn.active').style.color = '#000';
+
+        // =========================================
+        // LOAD RECIPES WHEN PAGE LOADS
+        // =========================================
+        // BEGINNER NOTE: Wait for the page to fully load (all HTML parsed)
+        // then call loadRecipes() to fetch and display recipes
+        // =========================================
+        window.addEventListener('DOMContentLoaded', loadRecipes);
+    </script>
+
+    <!-- 
+        ================================================
+        END OF FILE
+        ================================================
+        SUMMARY OF HOW THIS PAGE WORKS:
+        
+        1. HTML Structure: Defines the page layout
+           - Navigation bar at top
+           - Hero section with welcome message
+           - Grid for recipe cards
+           - Modal popup for recipe details
+        
+        2. CSS Styling: Makes the page look good
+           - Grid layout for responsive recipe cards
+           - Animations (fade-in, hover effects)
+           - Mobile-friendly design (responsive)
+        
+        3. JavaScript Logic: Makes the page interactive
+           - Loads recipes from CSV file when page loads
+           - Creates recipe cards dynamically
+           - Opens modal when card is clicked
+           - Closes modal when X/ESC/outside clicked
+           - Shows fallback recipes if main dataset fails
+        
+        KEY BEGINNER CONCEPTS:
+        - async/await: Wait for file downloads without freezing page
+        - fetch(): Download files from server
+        - DOM manipulation: Create and modify HTML elements with JavaScript
+        - Event listeners: React when user clicks, presses keys, etc.
+        - CSS Grid: Automatic layout that adapts to screen size
+        - Animations: Smooth transitions and effects
+        
+        TROUBLESHOOTING:
+        - If no recipes show: Make sure backend server is running
+        - If images don't load: Check DATASET folder path
+        - If modal doesn't open: Check browser console for errors (F12)
+        ================================================
+    -->
+
+</body>
+</html>
+
