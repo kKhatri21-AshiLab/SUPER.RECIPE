@@ -35,7 +35,7 @@
     <title>SuperCook - Home & Ingredient Search</title>
 
     <!-- SHARED NAVIGATION -->
-    <link rel="stylesheet" href="styles/shared-nav.css">
+    
         <style>
         * {
             box-sizing: border-box;
@@ -584,32 +584,10 @@ function createRecipeCard(recipe) {
     return cardDiv;
 }
 
-// Save recipe to localStorage
-function toggleSave(recipeId, event) {
-    event.stopPropagation();
+
     
-    let savedRecipes = JSON.parse(localStorage.getItem('savedRecipes') || '[]');
-    
-    const index = savedRecipes.indexOf(recipeId);
-    if (index > -1) {
-        savedRecipes.splice(index, 1);
-    } else {
-        savedRecipes.push(recipeId);
-    }
-    
-    localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
-    
-    // Update all save buttons (refresh visual state)
-    document.querySelectorAll('.save-btn').forEach(btn => {
-        const id = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
-        btn.classList.toggle('saved', savedRecipes.includes(id));
-    });
-    
-    // Update save count
-    document.querySelectorAll('.save_text').forEach(span => {
-        span.textContent = savedRecipes.length;
-    });
-}
+ 
+   
 
 // Check if recipe is saved
 function isSaved(recipeId) {
@@ -662,160 +640,31 @@ function renderFallback() {
     });
 }
 
-// ================= MODAL FUNCTIONS =================
-let currentRecipeId = null;
 
-// Robust YouTube ID extractor - fixes Error 153 for malformed TheMealDB URLs
-function getYouTubeVideoId(url) {
-  if (!url) return null;
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/i;
-  const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
-}
 
-function showRecipe(recipe) {
-    /* FIXED: TypeError null textContent - OLD BUG: getElementById('modalTitle') before innerHTML overwrite destroyed element.
-       NEW: 1) Show modal first 2) Bake title into HTML string 3) Set full content after display:block */
-    try {
-        console.log('showRecipe called with:', recipe.strMeal, recipe.idMeal);
-        if (!recipe || !recipe.idMeal) {
-            alert('Invalid recipe data. Check console (F12).');
-            return;
-        }
-        currentRecipeId = recipe.idMeal;
-        const modal = document.getElementById('recipeModal');
-        const contentEl = document.getElementById('modalRecipeContent');
-        
-        // STEP 1: Show modal immediately with title baked in HTML (prevents null element)
-        contentEl.innerHTML = `
-            <div style="text-align: center; padding: 20px;">
-                <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">${recipe.strMeal || 'Recipe'}</div>
-                <div id="modalSpinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 20px auto;"></div>
-                <p>Loading details...</p>
-            </div>
-        `;
-        modal.style.display = 'block';
-        modal.style.zIndex = '99999';
-        document.body.style.overflow = 'hidden';
-        console.log('Modal opened successfully - FIX APPLIED');
-        
+
+
         // Fetch full recipe details
-        fetchFullRecipe(recipe.idMeal);
-    } catch (error) {
-        console.error('showRecipe error:', error);
-        closeModal();
-    }
-}
-
-async function fetchFullRecipe(idMeal) {
-    console.log('Fetching full recipe for ID:', idMeal);
-    try {
-        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-        console.log('Full recipe response:', data.meals?.length);
-        if (data.meals && data.meals.length > 0) {
-            displayRecipe(data.meals[0]);
-        } else {
-            console.warn('No full recipe data for ID:', idMeal);
-            displayRecipeFallback(idMeal);
-        }
-    } catch (error) {
-        console.error('Failed to fetch full recipe for ' + idMeal + ':', error);
-        displayRecipeFallback(idMeal);
-    }
-}
-
-function displayRecipe(recipe) {
-    const contentEl = document.getElementById('modalRecipeContent');
-    const spinner = document.getElementById('modalSpinner');
-    
-    const ingredients = [];
-    for (let i = 1; i <= 20; i++) {
-        const ingredient = recipe[`strIngredient${i}`];
-        const measure = recipe[`strMeasure${i}`];
-        if (ingredient && ingredient.trim()) {
-            ingredients.push(`${measure ? measure.trim() + ' ' : ''}${ingredient.trim()}`);
-        }
-    }
-    
-    const instructions = recipe.strInstructions || 'Instructions not available.';
-    
-    contentEl.innerHTML = `
-        <div class="modal-body">
-            <img src="${recipe.strMealThumb}" alt="${recipe.strMeal}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <h2 style="color: #333; margin-bottom: 5px;">${recipe.strMeal}</h2>
-                <div style="color: #666; font-size: 1rem;">${recipe.strArea} • ${recipe.strCategory}</div>
-            </div>
-            
-            <div class="modal-section">
-                <h4>🥘 Ingredients (${ingredients.length})</h4>
-                ${ingredients.map(ing => `<div class="ingredient-item">${ing}</div>`).join('')}
-            </div>
-            
-            <div class="modal-section">
-                <h4>📋 Instructions</h4>
-                <div class="instruction-step">${instructions.replace(/\n/g, '<br>')}</div>
-            </div>
-            
-${recipe.strYoutube ? `
-            <div class="modal-section">
-                <h4>🎥 Video Tutorial</h4>
-                <div class="video-container">
-                    <iframe 
-                        src="https://www.youtube.com/embed/${getYouTubeVideoId(recipe.strYoutube)}?rel=0" 
-                        title="${recipe.strMeal || 'Recipe'} Video"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen 
-                        loading="lazy"
-                        onerror="this.parentElement.innerHTML='<p style=\\"text-align:center;color:#666;font-style:italic;\\">📹 Video unavailable (Error 153 fixed)</p>';"
-                    ></iframe>
-                </div>
-            </div>` : ''}
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="toggleSave('${recipe.idMeal}')" style="background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer;">
-                    ${isSaved(recipe.idMeal) ? '❤️ Saved' : '💙 Save Recipe'}
-                </button>
-            </div>
-        </div>
-    `;
-    
-    spinner.style.display = 'none';
-}
-
-function displayRecipeFallback(idMeal) {
-    /* SAFETY: Null-check spinner (may not exist after multiple innerHTML sets) */
-    const contentEl = document.getElementById('modalRecipeContent');
-    const spinner = document.getElementById('modalSpinner');
-    contentEl.innerHTML = `
-        <div class="modal-body" style="text-align: center; padding: 40px;">
-            <h3>🍳 Recipe Details</h3>
-            <p>Full recipe details temporarily unavailable.<br>
-            <small>ID: ${idMeal}</small></p>
-            <button onclick="toggleSave('${idMeal}')" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-top: 15px;">
-                ${isSaved(idMeal) ? '❤️ Saved' : '💙 Save Anyway'}
-            </button>
-        </div>
-    `;
-    if (spinner) spinner.style.display = 'none';  // Safe: spinner may be gone after re-render
-    console.log('Fallback displayed for ID:', idMeal);
-}
-
-function closeModal() {
-    /* IMPROVED: Null-safe cleanup */
-    const modal = document.getElementById('recipeModal');
-    const contentEl = document.getElementById('modalRecipeContent');
-    const spinner = document.getElementById('modalSpinner');
-    if (modal) modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-    currentRecipeId = null;
-    if (contentEl) contentEl.innerHTML = '';
-    if (spinner) spinner.style.display = 'none';
-    console.log('Modal fully closed and reset');
-}
-
+        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipe.idMeal}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.meals && data.meals[0]) {
+                    const fullRecipe = data.meals[0];
+                    console.log('Full recipe data fetched:', fullRecipe);
+                    renderModalContent(fullRecipe);
+                } else {
+                    throw new Error('No recipe details found');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching recipe details:', error);
+                contentEl.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">${recipe.strMeal || 'Recipe'}</div>
+                        <p style="color: #e74c3c;">Failed to load recipe details. Check connection and try again.</p>
+                    </div>
+                `;
+            });
 // Close modal on outside click or ESC
 document.addEventListener('click', (e) => {
     if (e.target.id === 'recipeModal') {
@@ -916,14 +765,9 @@ async function loadAlphabetMeals(letter) {
 document.addEventListener('DOMContentLoaded', () => {
     loadLatestRecipes();
     
-    // Load saved count on startup
-    document.querySelectorAll('.save_text').forEach(span => {
-        span.textContent = getSaveCount();
-    });
-});
     </script>
 
-TODO.md: Step 2 ✅ (JS function added), Step 3 ✅ (onclick handlers)
+
 
 </body>
 
