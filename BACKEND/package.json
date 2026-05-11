@@ -1,20 +1,13 @@
 {
-  "name": "super-recipe-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "Backend API for SUPER.RECIPE - Serves recipes from MongoDB and JSON files",
-  "main": "server.js",
-  "type": "module",
+  "description": "This is a Node.js/Express backend server that serves recipes from MongoDB and JSON files. It provides REST API endpoints for fetching, searching, and adding recipes.",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["recipe", "mongodb", "api"],
-  "author": "SUPER.RECIPE Team",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.18.2",
-    "mongodb": "^5.8.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1"
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
 }
