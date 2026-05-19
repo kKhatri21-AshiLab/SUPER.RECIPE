@@ -55,7 +55,7 @@
         /* HEADER: Navigation - STAYS AT TOP when scrolling */
 header {
             background: linear-gradient(135deg, #04072b 0%, #1a1f3d 100%);
-            color: #f7b2f3;
+            
             padding: 0.5rem 1rem;
             position: sticky;
             top: 0;
@@ -198,16 +198,30 @@ footer {
 /* ================= MEALS CONTAINER ================= */
 #meals-section {
     padding: 4rem 2rem;
-    max-width: 1400px;
+    
     margin: 0 auto;
-    background: #f8f9fa;
+    
 }
 
+#meals-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #09b8f3;
+}
+
+/* ================= RESPONSIVE MEALS GRID ================= */
+/* CHANGED: Updated from auto-fill to fixed column counts per device */
+/* Benefits: Ensures exact layout (4/3/2 recipes) instead of flexible sizing */
 .meals-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    /* DEFAULT: Desktop view - 4 recipes per row */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
     margin-top: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .loading {
@@ -232,12 +246,12 @@ footer {
 /* ================= CLEAN RECIPE CARDS ================= */
 .recipe-card {
   background: white;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(237, 233, 233, 0.1);
+      
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 1rem;
+ 
 }
 
 .recipe-card:hover {
@@ -245,15 +259,23 @@ footer {
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
+/* CHANGED: Increased height from 200px to 280px for portrait rectangle effect */
+/* Portrait ratio: 280px height creates nice vertical card appearance */
 .recipe-header {
   position: relative;
-  height: 200px;
+  height: 280px;
+
+  /* Maintain consistent width/height ratio across all devices */
   overflow: hidden;
 }
 
 .recipe-img {
-  width: 100%;
-  height: 100%;
+ height: 100%;
+ width: 100%;
+
+ border-radius: 12px;
+ 
+  
   object-fit: cover;
 }
 
@@ -313,14 +335,60 @@ footer {
   fill: currentColor;
 }
 
-@media (max-width: 768px) {
+/* ================= TABLET DEVICES (576px to 992px) ================= */
+/* CHANGED: 3 recipes per row for better tablet viewing */
+@media (max-width: 992px) {
   .meals-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    /* IMPROVED: 3 columns for tablet devices */
     gap: 1.5rem;
+    max-width: 1000px;
   }
   
   .recipe-header {
-    height: 180px;
+    height: 280px;
+    /* Keep portrait aspect ratio on tablet */
+  }
+  
+  .recipe-card {
+    margin: 0.5rem;
+    /* Reduced margin for tablet to save space */
+  }
+}
+
+/* ================= MOBILE DEVICES (< 576px) ================= */
+/* CHANGED: 2 recipes per row for mobile devices */
+@media (max-width: 576px) {
+  .meals-grid {
+    grid-template-columns: repeat(2, 1fr);
+    /* IMPROVED: 2 columns for small mobile screens */
+    gap: 1rem;
+    max-width: 100%;
+  }
+  
+  .recipe-header {
+    height: 280px;
+    /* Maintain consistent portrait height on mobile */
+  }
+  
+  .recipe-card {
+    margin: 0.25rem;
+    /* Minimal margin on mobile to maximize space */
+  }
+  
+  .recipe-content {
+    padding: 1rem;
+    /* Slightly reduced padding on mobile */
+  }
+  
+  .recipe-title {
+    font-size: 1rem;
+    /* Smaller font on mobile for better fit */
+  }
+  
+  .recipe-meta {
+    font-size: 0.8rem;
+    /* Smaller meta text on mobile */
   }
 }
 </style>
@@ -389,6 +457,10 @@ footer {
             <button class="alphabet-btn" onclick="loadAlphabetMeals('Z')">Z</button>
         </div>
     </div>
+//// need to repair 
+
+
+
 
 <section id="meals-section">
 <h2 id="meals-title" style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem;">🍽️ Loading Popular Recipes...</h2>
