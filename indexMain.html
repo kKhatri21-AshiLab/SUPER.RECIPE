@@ -56,7 +56,7 @@
 header {
             background: linear-gradient(135deg, #04072b 0%, #1a1f3d 100%);
             
-            padding: 0.5rem 1rem;
+            
             position: sticky;
             top: 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -217,7 +217,7 @@ footer {
     display: grid;
     /* DEFAULT: Desktop view - 4 recipes per row */
     grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
+    gap: 0.25rem;
     margin-top: 2rem;
     max-width: 1400px;
     margin-left: auto;
@@ -259,11 +259,11 @@ footer {
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
-/* CHANGED: Increased height from 200px to 280px for portrait rectangle effect */
-/* Portrait ratio: 280px height creates nice vertical card appearance */
+/* CHANGED: Reduced height from 280px to 200px to save space */
+/* Portrait ratio: 200px height creates compact vertical card appearance */
 .recipe-header {
   position: relative;
-  height: 280px;
+  height: 200px;
 
   /* Maintain consistent width/height ratio across all devices */
   overflow: hidden;
@@ -280,15 +280,15 @@ footer {
 }
 
 .recipe-content {
-  padding: 1.5rem;
+  padding: 0.8rem;
 }
 
 .recipe-title {
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #333;
-  margin-bottom: 0.5rem;
-  line-height: 1.3;
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
   display: -webkit-box;
 
   -webkit-box-orient: vertical;
@@ -297,13 +297,13 @@ footer {
 
 .recipe-meta {
   color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .recipe-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.3rem;
   justify-content: flex-end;
 }
 
@@ -311,14 +311,14 @@ footer {
   background: #667eea;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.35rem 0.7rem;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.2rem;
 }
 
 .save-btn.saved {
@@ -341,12 +341,12 @@ footer {
   .meals-grid {
     grid-template-columns: repeat(3, 1fr);
     /* IMPROVED: 3 columns for tablet devices */
-    gap: 1.5rem;
+    gap: 0.5rem;
     max-width: 1000px;
   }
   
   .recipe-header {
-    height: 280px;
+    height: 200px;
     /* Keep portrait aspect ratio on tablet */
   }
   
@@ -362,33 +362,33 @@ footer {
   .meals-grid {
     grid-template-columns: repeat(2, 1fr);
     /* IMPROVED: 2 columns for small mobile screens */
-    gap: 1rem;
+    gap: 0.25rem;
     max-width: 100%;
   }
   
   .recipe-header {
-    height: 280px;
+    height: 180px;
     /* Maintain consistent portrait height on mobile */
   }
   
   .recipe-card {
     /* MARGIN 1 REM */
-    margin: 1PX;
+    margin: 0;
     /* Minimal margin on mobile to maximize space */
   }
   
   .recipe-content {
-    padding: 1rem;
+    padding: 0.6rem;
     /* Slightly reduced padding on mobile */
   }
   
   .recipe-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
     /* Smaller font on mobile for better fit */
   }
   
   .recipe-meta {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     /* Smaller meta text on mobile */
   }
 }
