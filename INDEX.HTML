@@ -235,7 +235,9 @@
                 recipes.forEach((r, index) => {
                     if (!r.name) return;
                     
-                    const imgPath = r.image || 'https://via.placeholder.com/350x250?text=Recipe+Image';
+                    // Avoid auto-fetching via.placeholder.com. Only load a real image URL.
+                    // If no image exists, keep src empty; we will not request external placeholders.
+                    const imgPath = r.image || '';
                     const desc = r.description ? r.description.slice(0, 100) + '...' : 'Delicious recipe!';
                     const fullIng = Array.isArray(r.ingredients) ? r.ingredients : (r.ingredients || []);
                     
@@ -258,7 +260,7 @@
                     card.style.animationDelay = `${0.1 * (index % 12)}s`;
                     
                     card.innerHTML = `
-                        <img class="card-img" src="${imgPath}" alt="${r.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/350x250?text=Recipe';">
+                        <img class="card-img" src="${imgPath}" alt="${r.name}" loading="lazy" onerror="this.removeAttribute('src'); this.alt='No image';">
                         <div class="card-content">
                             <h3 class="card-title">${r.name}</h3>
                             <p class="card-desc">${desc}</p>
