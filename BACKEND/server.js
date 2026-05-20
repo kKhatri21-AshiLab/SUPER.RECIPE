@@ -22,13 +22,12 @@
  * ========================================
  */
 
-import express from 'express';
-import cors from 'cors';
-import { MongoClient } from 'mongodb';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+const express = require('express');
+const cors = require('cors');
+const { MongoClient, ObjectId } = require('mongodb');
+const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
 
 // ========================================
 // SETUP & CONFIGURATION
@@ -38,9 +37,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/recipes';
 
-// Get current directory (needed for ES modules)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// CommonJS provides __dirname automatically.
 
 // ========================================
 // MIDDLEWARE
@@ -318,7 +315,6 @@ app.get('/api/recipes/:id', async (req, res) => {
         const db = await connectMongoDB();
         if (db) {
             try {
-                const { ObjectId } = require('mongodb');
                 const recipe = await db.collection('recipes').findOne({ _id: new ObjectId(id) });
                 if (recipe) {
                     return res.json({ success: true, recipe });
